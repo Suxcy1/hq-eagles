@@ -1,0 +1,1505 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard — ElitePro</title>
+
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '645771161540733');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=645771161540733&ev=PageView&noscript=1" /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <script>
+    fbq('track', 'Purchase', { value: 49.99, currency: 'USD' });
+  </script>
+
+
+
+  <!-- Keep your Firebase init in javascript/firebase.js (must run before our code below) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+  <script src="firebase.js"></script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #fff;
+      --primary-blue: #004E89;
+      --accent: #FF6B35;
+      --muted: #6b7280;
+      --success: #16a34a;
+      --danger: #e04848;
+      --radius: 12px;
+      --shadow: 0 8px 30px rgba(12, 18, 30, 0.06);
+      --max-width: 1200px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial;
+      background: linear-gradient(180deg, #f6f8fb, #eef4ff);
+      color: #0b1220;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .stage {
+      max-width: var(--max-width);
+      margin: 28px auto;
+      padding: 0 16px
+    }
+
+    /* Top bar mobile */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .brand .logo {
+      font-weight: 800;
+      font-size: 20px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .brand .logo i {
+      color: var(--accent);
+      font-size: 22px;
+    }
+
+    .hamburger {
+      display: none;
+      background: var(--card);
+      border: 0;
+      padding: 8px 10px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Layout */
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media(max-width:900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hamburger {
+        display: inline-flex
+      }
+
+      .sidebar {
+        display: none;
+        position: fixed;
+        inset: 0;
+        width: 260px;
+        z-index: 1200;
+        background: var(--card);
+        padding: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .sidebar.open {
+        display: block;
+      }
+
+      .main {
+        margin-left: 0;
+      }
+    }
+
+    .sidebar {
+      background: var(--card);
+      padding: 22px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      height: calc(100vh - 80px);
+      position: sticky;
+      top: 28px;
+    }
+
+    .user-profile {
+      text-align: center;
+      margin-bottom: 18px
+    }
+
+    .user-profile img {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      border: 4px solid var(--accent);
+      object-fit: cover;
+    }
+
+    .company-name {
+      font-size: 16px;
+      margin: 6px 0 0;
+      font-weight: 700
+    }
+
+    .user-email {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 18px
+    }
+
+    .nav a {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all .15s ease
+    }
+
+    .nav a:hover {
+      background: #f1f6ff;
+      color: var(--primary-blue);
+      transform: translateY(-2px)
+    }
+
+    .nav a.active {
+      background: linear-gradient(90deg, rgba(0, 78, 137, 0.12), rgba(15, 98, 254, 0.05));
+      color: var(--primary-blue);
+      box-shadow: 0 8px 24px rgba(15, 98, 254, 0.06);
+      border-left: 4px solid var(--primary-blue);
+      padding-left: 10px;
+    }
+
+    /* Main */
+    .main {
+      padding: 22px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      color: var(--primary-blue)
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .btn {
+      border: 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 8px 20px rgba(255, 107, 53, 0.18)
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--primary-blue);
+      border: 1px solid rgba(0, 78, 137, 0.08)
+    }
+
+    /* Banner */
+    .banner {
+      background: #fff9e6;
+      border: 1px solid #ffe4b5;
+      padding: 12px 14px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .banner .left {
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .banner strong {
+      color: #7a5800
+    }
+
+    .banner .cta {
+      display: flex;
+      gap: 8px
+    }
+
+    /* Stats grid */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    @media(max-width:900px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:520px) {
+      .stats {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .card {
+      background: var(--card);
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: visible;
+      min-height: 110px;
+    }
+
+    #logoutBtn.disabled,
+    #logoutBtn[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+
+    .stat-left-accent {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      border-radius: 6px 0 0 6px;
+    }
+
+    .accent-active {
+      background: linear-gradient(180deg, #60a5fa, #0f62fe);
+    }
+
+    .accent-inactive {
+      background: linear-gradient(180deg, #9ca3af, #6b7280);
+    }
+
+    .accent-sold {
+      background: linear-gradient(180deg, #34d399, #10b981);
+    }
+
+    .accent-review {
+      background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    }
+
+    .accent-rejected {
+      background: linear-gradient(180deg, #f87171, #ef4444);
+    }
+
+    .accent-canceled {
+      background: linear-gradient(180deg, #a78bfa, #7c3aed);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px
+    }
+
+    .stat-title {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0b1220
+    }
+
+    .mini-thumbs {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      align-items: center
+    }
+
+    .thumb {
+      width: 56px;
+      height: 44px;
+      border-radius: 8px;
+      background: #f3f4f6;
+      border: 1px solid #e6e9ee;
+      object-fit: cover
+    }
+
+    .view-link {
+      margin-top: 10px;
+      display: inline-block;
+      color: var(--primary-blue);
+      font-weight: 700;
+      text-decoration: none
+    }
+
+    /* Quick action card */
+    .promo {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #ebf4ff, #f2fff8);
+      border: 1px solid rgba(15, 98, 254, 0.04)
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: #111827;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 10px;
+      display: none;
+      z-index: 1300
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1400
+    }
+
+    .modal {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 18px;
+      width: min(720px, 96%);
+      box-shadow: var(--shadow);
+    }
+
+    .modal .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .modal label {
+      font-size: 13px;
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    .modal input,
+    .modal select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #e6e9ee;
+    }
+
+    /* Small helpers */
+    .muted {
+      color: var(--muted)
+    }
+
+    .small {
+      font-size: 13px
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0, #e8eefc, #f0f0f0);
+      height: 12px;
+      border-radius: 6px;
+      animation: shimmer 1.2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200px 0
+      }
+
+      100% {
+        background-position: 200px 0
+      }
+    }
+
+
+    .install-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .install-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 16px 16px 0 0;
+      padding: 20px;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+      animation: slideUp 0.3s ease;
+    }
+
+    .install-text p {
+      margin: 6px 0 14px;
+      color: #555;
+    }
+
+    .install-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .install-actions button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #installBtn {
+      background: #0b5ed7;
+      color: #fff;
+    }
+
+    #closeInstall {
+      background: #eee;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stage">
+    <div id="installPopup" class="install-popup hidden">
+      <div class="install-card">
+        <div class="install-text">
+          <strong>Install Eagle Hub</strong>
+          <p>Get faster access and offline support.</p>
+        </div>
+        <div class="install-actions">
+          <button id="installBtn">Install</button>
+          <button id="closeInstall">Not now</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="iosPopup" class="install-popup hidden">
+      <div class="install-card">
+        <strong>Install Eagle Hub</strong>
+        <p>
+          Tap the <strong>Share</strong> button in Safari<br>
+          then choose <strong>Add to Home Screen</strong>
+        </p>
+        <button id="closeIOS">Got it</button>
+      </div>
+    </div>
+
+
+
+    <!-- Top bar for mobile and quick actions -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"><i class="fas fa-crown"></i><span>Eagles</span>Hub</div>
+        <div class="small muted">Property Dashboard</div>
+      </div>
+      <div class="actions">
+        <button id="upgradeBtn" class="btn btn-ghost">Upgrade</button>
+        <button id="addPropertyBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Add Property</button>
+        <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+
+        <!-- paste the bell button here -->
+        <button id="notificationBtn" class="btn btn-ghost" title="Notifications" aria-label="Notifications"
+          onclick="location.href='notification.html'">
+          <i class="fas fa-bell"></i>
+          <span id="notifCount"
+            style="display:none; min-width:28px; padding:2px 6px; font-size:12px; border-radius:12px; background:#e0245e; color:#fff; margin-left:6px; vertical-align:top;">0</span>
+        </button>
+        <button id="message" class="btn btn-ghost" title="message" aria-label="message"
+          onclick="location.href='chats.html'">
+          <i class="fas fa-comments"></i>
+          <span id="messageCount"
+            style="display:none; min-width:28px; padding:2px 6px; font-size:12px; border-radius:12px; background:#e0245e; color:#fff; margin-left:6px; vertical-align:top;">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Banner for profile / subscription / verification alerts (non-blocking) -->
+    <div id="bannerArea"></div>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="user-profile" role="region" aria-label="User profile">
+          <img id="userImg" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile image">
+          <div class="company-name" id="companyName">Loading...</div>
+          <div class="user-email small" id="userEmail">Loading...</div>
+        </div>
+
+        <nav class="nav" aria-label="Main navigation">
+          <a href="#" class="active"><i class="fas fa-chart-pie"></i> Overview</a>
+          <a href="chats.html"><i class="fas fa-comments"></i> Messages</a>
+          <a href="notification.html"><i class="fas fa-bell"></i> Notification</a>
+          <a href="subscription.html"><i class="fas fa-gem"></i> Subscription</a>
+          <a href="/settings"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="main">
+        <div class="header">
+          <h1>Property Dashboard</h1>
+          <div class="muted small">Manage listings, view stats and promote properties</div>
+        </div>
+
+        <!-- Stats -->
+        <section class="stats" aria-label="Property statistics">
+
+          <div class="card" id="card-active" data-status="Active" role="button" tabindex="0" aria-pressed="false">
+            <div class="stat-left-accent accent-active"></div>
+            <div class="stat-header">
+              <div class="stat-title">Active Properties</div>
+              <div class="stat-value" id="count-active">—</div>
+            </div>
+            <div class="mini-thumbs" id="thumbs-active"></div>
+            <a class="view-link" href="#" data-status="Active">View all</a>
+          </div>
+
+          <div class="card" id="card-inactive" data-status="InActive" role="button" tabindex="0" aria-pressed="false">
+            <div class="stat-left-accent accent-inactive"></div>
+            <div class="stat-header">
+              <div class="stat-title">InActive</div>
+              <div class="stat-value" id="count-inactive">—</div>
+            </div>
+            <div class="mini-thumbs" id="thumbs-inactive"></div>
+            <a class="view-link" href="#" data-status="InActive">View all</a>
+          </div>
+
+          <div class="card" id="card-sold" data-status="Sold" role="button" tabindex="0" aria-pressed="false">
+            <div class="stat-left-accent accent-sold"></div>
+            <div class="stat-header">
+              <div class="stat-title">Sold</div>
+              <div class="stat-value" id="count-sold">—</div>
+            </div>
+            <div class="mini-thumbs" id="thumbs-sold"></div>
+            <a class="view-link" href="#" data-status="Sold">View all</a>
+          </div>
+
+          <div class="card" id="card-review" data-status="review" role="button" tabindex="0" aria-pressed="false">
+            <div class="stat-left-accent accent-review"></div>
+            <div class="stat-header">
+              <div class="stat-title">In Review</div>
+              <div class="stat-value" id="count-review">—</div>
+            </div>
+            <div class="mini-thumbs" id="thumbs-review"></div>
+            <a class="view-link" href="#" data-status="review">View all</a>
+          </div>
+
+          <div class="card" id="card-rejected" data-status="rejected" role="button" tabindex="0" aria-pressed="false">
+            <div class="stat-left-accent accent-rejected"></div>
+            <div class="stat-header">
+              <div class="stat-title">Rejected</div>
+              <div class="stat-value" id="count-rejected">—</div>
+            </div>
+            <div class="mini-thumbs" id="thumbs-rejected"></div>
+            <a class="view-link" href="#" data-status="rejected">View all</a>
+          </div>
+
+          <div class="card" id="card-canceled" data-status="canceled" role="button" tabindex="0" aria-pressed="false">
+            <div class="stat-left-accent accent-canceled"></div>
+            <div class="stat-header">
+              <div class="stat-title">Canceled</div>
+              <div class="stat-value" id="count-canceled">—</div>
+            </div>
+            <div class="mini-thumbs" id="thumbs-canceled"></div>
+            <a class="view-link" href="#" data-status="canceled">View all</a>
+          </div>
+
+        </section>
+
+        <!-- Quick promo row -->
+        <section style="display:flex; gap:12px; align-items:center; margin-bottom:24px;">
+          <div class="promo" style="flex:1">
+            <div style="flex:1">
+              <h3 style="margin:0 0 6px">Premium Features</h3>
+              <div class="muted">Upgrade to publish more properties and get ad placements.</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button id="upgradeNow" class="btn btn-primary">Upgrade Now</button>
+              <button id="learnMore" class="btn btn-ghost">Learn</button>
+            </div>
+          </div>
+          <div style="width:260px">
+            <div class="card" style="padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center">
+                <div class="small muted">Plan</div>
+                <div id="planBadge"
+                  style="background:linear-gradient(90deg,#dbeafe,#e0f2fe); color:var(--primary-blue); padding:8px 10px; border-radius:999px; font-weight:700">
+                  Loading</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Empty placeholder for any additional content -->
+        <div id="extraArea"></div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal for profile completion -->
+  <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <h3 id="profileModalTitle">Complete your profile</h3>
+      <p class="small muted">Finish this short form to start publishing properties.</p>
+      <div style="height:12px"></div>
+      <form id="profileForm">
+        <div class="form-grid">
+          <div>
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstName" />
+          </div>
+          <div>
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastName" />
+          </div>
+          <div>
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" />
+          </div>
+          <div>
+            <label for="company">Company (optional)</label>
+            <input id="company" name="company" />
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button type="button" id="saveProfileBtn" class="btn btn-primary">Save</button>
+          <button type="button" id="closeModal" class="btn btn-ghost">Close</button>
+        </div>
+        <div id="profileSaveStatus" class="small muted" style="margin-top:8px"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div id="eh-loader-target"></div>
+
+  <!-- <script>
+    (async () => {
+      const base = 'component/loader'; // update to your path
+      // add CSS
+      if (!document.querySelector('link[data-eh-loader-css]')) {
+        const l = document.createElement('link');
+        l.rel = 'stylesheet'; l.href = base + '/loader.css'; l.setAttribute('data-eh-loader-css', 'true');
+        document.head.appendChild(l);
+      }
+      // preload fragment (optional, speeds up first show)
+      try {
+        await fetch(base + '/loader.html', { cache: 'no-store' });
+      } catch (e) { }
+      // load the API
+      const s = document.createElement('script');
+      s.src = base + '/loader.js';
+      s.defer = true;
+      document.body.appendChild(s);
+    })();
+
+    // Loader.show({ mode: 'fullscreen' });
+  </script> -->
+
+  <script>
+    /* Dashboard JS
+       - Expects firebase to be already initialized in javascript/firebase.js
+       - Uses Realtime Database structure:
+           Users/<uid>
+           Properties/<uid>/<propertyId>
+       - Queries counts and up to 4 thumbnails per status
+    */
+
+    // fullscreen mode
+    // Loader.show({ mode: 'fullscreen' });
+
+
+    (async () => {
+      const base = '/component/loader'; // <-- set this to your actual folder (note leading slash)
+      // add CSS once
+      if (!document.querySelector('link[data-eh-loader-css]')) {
+        const l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = base + '/loader.css';
+        l.setAttribute('data-eh-loader-css', 'true');
+        document.head.appendChild(l);
+      }
+
+      // optional: preload fragment to warm fetch
+      try { await fetch(base + '/loader.html', { cache: 'no-store' }); } catch (e) { }
+
+      // add loader.js and wait for it to load
+      const s = document.createElement('script');
+      s.src = base + '/loader.js';
+      s.defer = true;
+      s.setAttribute('data-eh-loader-js', 'true');
+
+      s.onload = () => {
+        if (window.Loader) {
+          // NOW it's safe to call Loader
+          Loader.show({ mode: 'fullscreen' });
+          // const section = document.getElementById('card'); // ensure position:relative
+          // Loader.show({ mode: 'inline', target: section });
+          // example hide after 1.8s (remove or call hide when work finishes)
+          // setTimeout(() => Loader.hide(), 1800);
+        } else {
+          console.error('loader.js loaded but window.Loader not found.');
+        }
+      };
+
+      s.onerror = () => console.error('Failed to load loader.js — check path:', s.src);
+      document.body.appendChild(s);
+    })();
+
+
+
+    // Loader.show({ mode: 'fullscreen' });
+
+    const auth = firebase.auth();
+    const database = firebase.database();
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((reg) => {
+            console.log("Service Worker registered", reg);
+          })
+          .catch((err) => {
+            console.log("Service Worker registration failed", err);
+          });
+      });
+    }
+
+
+    // ---- Replace previous install logic with this ----
+    // Put this near the top of your main JS (or in head) so the beforeinstallprompt listener is attached early.
+    let deferredPrompt = null;
+
+    function isIOS() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent);
+    }
+
+    function isInStandaloneMode() {
+      // checks for iOS standalone or display-mode standalone
+      return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+    }
+
+    function showInstallPopup() {
+      const el = document.getElementById("installPopup");
+      if (el) el.classList.remove("hidden");
+    }
+
+    // Listen for the browser install event (Android / Chromium)
+    window.addEventListener("beforeinstallprompt", (e) => {
+      console.log("beforeinstallprompt fired");
+      e.preventDefault();
+      deferredPrompt = e;
+      // show popup every visit (unless already installed)
+      if (!isInStandaloneMode()) showInstallPopup();
+    });
+
+    // DOM ready wiring
+    document.addEventListener("DOMContentLoaded", () => {
+      localStorage.removeItem("installDismissed");
+      localStorage.removeItem("iosInstallDismissed");
+
+      const installBtn = document.getElementById("installBtn");
+      const closeBtn = document.getElementById("closeInstall");
+
+      // If user is already in standalone (app installed), hide any popup
+      if (isInStandaloneMode()) {
+        const p = document.getElementById("installPopup");
+        if (p) p.classList.add("hidden");
+        const ios = document.getElementById("iosPopup");
+        if (ios) ios.classList.add("hidden");
+        return;
+      }
+
+      // Show Android popup every visit (even if beforeinstallprompt hasn't fired yet)
+      if (!isIOS()) {
+        // show the popup immediately so user is asked each visit
+        // browser might still have deferredPrompt set and we'll use it when they click Install
+        showInstallPopup();
+      }
+
+      // Install button behavior (works for both cases)
+      if (installBtn) {
+        installBtn.addEventListener("click", async () => {
+          // If we have the native prompt saved, show it
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const choice = await deferredPrompt.userChoice;
+            console.log("userChoice", choice);
+            // clear saved prompt so we don't reuse it
+            deferredPrompt = null;
+          } else {
+            // Fallback: instruct the user to use Chrome menu -> Add to Home screen
+            alert('If the native install prompt did not appear, please open Chrome menu (⋮) and choose "Add to Home screen".');
+          }
+          // hide popup after action
+          const p = document.getElementById("installPopup");
+          if (p) p.classList.add("hidden");
+        });
+      }
+
+      // Close / "Not now" button — just hides the popup (but we DO NOT persist choice)
+      if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+          const p = document.getElementById("installPopup");
+          if (p) p.classList.add("hidden");
+        });
+      }
+
+      // iOS: show instruction popup every visit if not installed
+      if (isIOS()) {
+        const iosPopup = document.getElementById("iosPopup");
+        if (iosPopup) iosPopup.classList.remove("hidden");
+        const closeIOS = document.getElementById("closeIOS");
+        if (closeIOS) {
+          closeIOS.addEventListener("click", () => {
+            iosPopup.classList.add("hidden");
+          });
+        }
+      }
+    });
+
+    // Optional: hide popups when app gets installed
+    window.addEventListener("appinstalled", () => {
+      console.log("PWA installed (appinstalled)");
+      const p = document.getElementById("installPopup");
+      if (p) p.classList.add("hidden");
+      const ios = document.getElementById("iosPopup");
+      if (ios) ios.classList.add("hidden");
+    });
+
+
+
+    // DOM refs
+    const sidebar = document.getElementById('sidebar');
+    const hamburger = document.getElementById('hamburger');
+    const addPropertyBtn = document.getElementById('addPropertyBtn');
+    const upgradeBtn = document.getElementById('upgradeBtn');
+    const upgradeNow = document.getElementById('upgradeNow');
+    const planBadge = document.getElementById('planBadge');
+    const bannerArea = document.getElementById('bannerArea');
+    const toast = document.getElementById('toast');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const closeModal = document.getElementById('closeModal');
+    const profileSaveStatus = document.getElementById('profileSaveStatus');
+
+    // Stat elements map
+    const STAT_MAP = {
+      Active: { countEl: 'count-active', thumbs: 'thumbs-active', card: 'card-active' },
+      InActive: { countEl: 'count-inactive', thumbs: 'thumbs-inactive', card: 'card-inactive' },
+      Sold: { countEl: 'count-sold', thumbs: 'thumbs-sold', card: 'card-sold' },
+      review: { countEl: 'count-review', thumbs: 'thumbs-review', card: 'card-review' },
+      rejected: { countEl: 'count-rejected', thumbs: 'thumbs-rejected', card: 'card-rejected' },
+      canceled: { countEl: 'count-canceled', thumbs: 'thumbs-canceled', card: 'card-canceled' }
+    };
+
+    let currentUser = null;
+    let currentUserData = null;
+
+    // small helpers
+    function showToast(msg, ms = 2400) { toast.textContent = msg; toast.style.display = 'block'; setTimeout(() => toast.style.display = 'none', ms); }
+    function showBanner(html) { bannerArea.innerHTML = html; }
+    function clearBanner() { bannerArea.innerHTML = ''; }
+
+    // mobile sidebar toggle
+    hamburger.addEventListener('click', () => { sidebar.classList.toggle('open'); });
+
+    // add property
+    addPropertyBtn.addEventListener('click', () => window.location.href = 'add-property.html');
+    upgradeBtn.addEventListener('click', () => window.location.href = 'subscription.html');
+    upgradeNow.addEventListener('click', () => window.location.href = 'subscription.html');
+
+
+    // Logout handler (requires firebase compat: firebase.auth())
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (!logoutBtn) return;
+
+      // small helper to disable/enable the button
+      function setBtnBusy(el, busy = true) {
+        el.disabled = busy;
+        if (busy) {
+          el.classList.add('disabled');
+          el.setAttribute('aria-busy', 'true');
+        } else {
+          el.classList.remove('disabled');
+          el.removeAttribute('aria-busy');
+        }
+      }
+
+      logoutBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        // confirmation (optional)
+        const ok = confirm('Are you sure you want to log out?');
+        if (!ok) return;
+
+        setBtnBusy(logoutBtn, true);
+
+        try {
+          // Sign out from Firebase
+          await firebase.auth().signOut();
+
+          // Clear local/session storage used by your app (adjust keys if needed)
+          try { sessionStorage.clear(); } catch (er) { /* ignore */ }
+
+          // Redirect to login page (change to your actual login route)
+          window.location.href = 'index.html';
+        } catch (err) {
+          console.error('Logout failed:', err);
+          alert('Logout failed. Please try again.');
+          setBtnBusy(logoutBtn, false);
+        }
+      });
+    });
+
+
+    // open modal
+    function openProfileModal() {
+      modalBackdrop.style.display = 'flex';
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+      // load session draft if present
+      const draft = sessionStorage.getItem('profileDraft');
+      if (draft) {
+        try {
+          const data = JSON.parse(draft);
+          document.getElementById('firstName').value = data.firstName || '';
+          document.getElementById('lastName').value = data.lastName || '';
+          document.getElementById('phone').value = data.phone || '';
+          document.getElementById('company').value = data.company || '';
+        } catch (e) { }
+      } else if (currentUserData) {
+        document.getElementById('firstName').value = currentUserData.details?.firstName || '';
+        document.getElementById('lastName').value = currentUserData.details?.lastName || '';
+        document.getElementById('phone').value = currentUserData.details?.phone || '';
+        document.getElementById('company').value = currentUserData.company?.companyName || '';
+      }
+    }
+    closeModal.addEventListener('click', () => {
+      modalBackdrop.style.display = 'none';
+      modalBackdrop.setAttribute('aria-hidden', 'true');
+    });
+
+    // autosave draft on input
+    document.getElementById('profileForm').addEventListener('input', () => {
+      const draft = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        company: document.getElementById('company').value.trim()
+      };
+      sessionStorage.setItem('profileDraft', JSON.stringify(draft));
+    });
+
+    // Save profile to DB
+    saveProfileBtn.addEventListener('click', async () => {
+      const user = currentUser;
+      if (!user) { showToast('Please sign in'); return; }
+      const uid = user.uid;
+      const data = {
+        details: {
+          firstName: document.getElementById('firstName').value.trim(),
+          lastName: document.getElementById('lastName').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          email: user.email
+        },
+        company: {
+          companyName: document.getElementById('company').value.trim() || 'No Company'
+        },
+        meta: {
+          userId: uid,
+          verified: currentUserData?.meta?.verified || 'UnVerified',
+          upDatedAt: firebase.database.ServerValue.TIMESTAMP
+        }
+      };
+
+      profileSaveStatus.textContent = 'Saving...';
+      try {
+        await database.ref(`Users/${uid}`).update(data);
+        profileSaveStatus.textContent = 'Saved!';
+        sessionStorage.removeItem('profileDraft');
+        // refresh UI
+        await loadUserAndDashboard(uid);
+        setTimeout(() => {
+          profileSaveStatus.textContent = '';
+          modalBackdrop.style.display = 'none';
+          modalBackdrop.setAttribute('aria-hidden', 'true');
+        }, 700);
+      } catch (err) {
+        profileSaveStatus.textContent = 'Save failed. Try again.';
+        console.error(err);
+      }
+    });
+
+    // When user clicks view links or stat cards -> navigate to properties page with status
+    document.querySelectorAll('.view-link, .card').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const status = e.currentTarget.dataset?.status || e.currentTarget.getAttribute('data-status');
+        if (!status) return;
+        window.location.href = `properties.html?status=${encodeURIComponent(status)}`;
+      });
+    });
+
+    // keyboard accessibility for cards
+    document.querySelectorAll('.card').forEach(c => {
+      c.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); } });
+    });
+
+    // AUTH: load initial state and then dashboard
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        // not signed in -> redirect to login
+        window.location.href = '/index.html';
+        return;
+      }
+      currentUser = user;
+      await loadUserAndDashboard(user.uid);
+    });
+
+    // load user profile and dashboard counts & thumbnails
+    async function loadUserAndDashboard(uid) {
+      try {
+        // parallel reads: user data + counts for each status (LIMITED thumbnails)
+        const [userSnap] = await Promise.all([
+          database.ref(`Users/${uid}`).once('value')
+        ]);
+        currentUserData = userSnap.val() || {};
+
+        console.log(currentUserData);
+
+        localStorage.setItem('data', currentUserData)
+
+        // const data = localStorage.getItem('data')
+
+        // console.log(data);
+
+        // render profile info
+        document.getElementById('companyName').textContent = currentUserData.company?.companyName || (currentUser.email || 'User');
+        document.getElementById('userEmail').textContent = currentUserData.details?.email || (currentUser.email || '');
+        if (currentUserData.media?.profileImage && currentUserData.media.profileImage !== 'No Image') {
+          document.getElementById('userImg').src = currentUserData.media.profileImage;
+        } else {
+          document.getElementById('userImg').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent((currentUserData.details?.firstName || currentUser.displayName || 'U'));
+        }
+
+        // show plan badge
+        const plan = (currentUserData.subscription?.plan || sessionStorage.getItem('plan') || 'starter');
+        planBadge.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+
+        // Check for gating conditions
+        handleGates(currentUserData);
+
+        // Get stats counts and thumbnails
+        await refreshStats(uid);
+      } catch (err) {
+        console.error('loadUserAndDashboard error', err);
+        showToast('Could not load dashboard');
+      }
+    }
+
+    // handle profile/subscription/verification banner logic
+    function handleGates(userData) {
+      // Clear previous banner
+      clearBanner();
+
+
+
+      // Namespaced Firebase (v8 or v9-compat) code to count 'new' notifications
+      (function () {
+        const badgeEl = document.getElementById('notifCount');
+        const btnEl = document.getElementById('notificationBtn');
+        const userId = window.userId; // make sure this exists before this script runs
+
+        if (!currentUser.uid) {
+          console.error('notification script: window.userId not found. Set window.userId before loading this script.');
+          if (badgeEl) badgeEl.style.display = 'none';
+          return;
+        }
+
+        if (typeof firebase === 'undefined' || !firebase.database) {
+          console.error('notification script: Firebase namespaced SDK not found. Include firebase-app.js and firebase-database.js (v8) or v9 compat.');
+          if (badgeEl) badgeEl.style.display = 'none';
+          return;
+        }
+
+        // Count nodes with status === 'new' (case-insensitive)
+        function countNewNodes(obj) {
+          if (!obj) return 0;
+          let count = 0;
+          try {
+            Object.values(obj).forEach(node => {
+              if (!node) return;
+              const status = node.status;
+              if (status && String(status).toLowerCase() === 'new') count++;
+            });
+          } catch (e) {
+            // if obj isn't a plain object, ignore
+          }
+          return count;
+        }
+
+        // Update badge visibility and text
+        function setBadge(n) {
+          if (!badgeEl) return;
+          if (!n || n <= 0) {
+            badgeEl.style.display = 'none';
+            badgeEl.textContent = '0';
+          } else {
+            badgeEl.style.display = 'inline-block';
+            badgeEl.textContent = n > 99 ? '99+' : String(n);
+          }
+        }
+
+        let userSnap = null;
+        let servicesSnap = null;
+
+        function refreshCombinedCount() {
+          const total = countNewNodes(userSnap) + countNewNodes(servicesSnap);
+          setBadge(total);
+        }
+
+        // Realtime listeners
+        try {
+          const userRef = firebase.database().ref(`Users/${currentUser.uid}/notifications`);
+          const servicesRef = firebase.database().ref('Services/notifications');
+
+          userRef.on('value', function (snapshot) {
+            userSnap = snapshot.val() || null;
+            refreshCombinedCount();
+          }, function (error) {
+            console.error('notification script: error reading Users notifications', error);
+          });
+
+          servicesRef.on('value', function (snapshot) {
+            servicesSnap = snapshot.val() || null;
+            refreshCombinedCount();
+          }, function (error) {
+            console.error('notification script: error reading Services notifications', error);
+          });
+        } catch (err) {
+          console.error('notification script: failed to attach DB listeners', err);
+          setBadge(0);
+        }
+
+        // navigation behaviour (ensure clicking or keyboard opens notification.html)
+        if (btnEl) {
+          btnEl.addEventListener('click', function () {
+            window.location.href = 'notification.html';
+          });
+          btnEl.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              window.location.href = 'notification.html';
+            }
+          });
+        }
+
+        // initial hide
+        setBadge(0);
+      })();
+
+
+
+      // 1) Profile exists?
+      if (!userData || !userData.details || !userData.details.firstName) {
+        showBanner(`<div class="banner">
+      <div class="left"><strong>Complete your profile</strong><div class="small muted">Your profile is incomplete. Finish it to start publishing properties.</div></div>
+      <div class="cta">
+        <button class="btn btn-primary" id="bannerComplete">Complete Now</button>
+        <button class="btn btn-ghost" id="bannerLater">Remind me later</button>
+      </div>
+    </div>`);
+
+        //document.getElementById('bannerComplete').addEventListener('click', openProfileModal);
+        document.getElementById('bannerComplete').addEventListener('click', () => window.location.href = 'complete-profile.html');
+        document.getElementById('bannerLater').addEventListener('click', () => clearBanner());
+        // disable add property until profile done
+        addPropertyBtn.disabled = true; // keep enabled but user will be guided, not forcibly blocked
+      }
+
+      // 2) Verification
+      if (userData?.meta?.verified === 'UnVerified') {
+        showBanner(`<div class="banner">
+      <div class="left"><strong>Account verification required</strong><div class="small muted">Verify your account to list properties.</div></div>
+      <div class="cta">
+        <button class="btn btn-primary" id="verifyNow">Verify</button>
+      </div>
+    </div>`);
+        document.getElementById('verifyNow').addEventListener('click', () => window.location.href = 'IdentityVerification.html');
+        addPropertyBtn.style.display = 'inline-flex';
+        addPropertyBtn.disabled = true;
+      } else if (userData?.meta?.verified === 'Processing') {
+        addPropertyBtn.disabled = true;
+        showBanner(`<div class="banner"><div class="left"><strong>Verification in progress</strong><div class="small muted">Documents are under review. Allow 24-48 hours.</div></div></div>`);
+      }
+
+      // 3) Subscription
+      if (userData.details && userData?.meta?.verified === 'Verified') {
+        if (!userData?.subscription || !userData.subscription.plan) {
+          showBanner(`<div class="banner"><div class="left"><strong>Subscribe to a plan</strong><div class="small muted">You need a subscription to publish more properties.</div></div><div class="cta"><button class="btn btn-primary" id="subscribeNow">Subscribe</button></div></div>`);
+          document.getElementById('subscribeNow').addEventListener('click', () => window.location.href = 'subscription.html');
+          // optionally disable add property if required
+          addPropertyBtn.disabled = true;
+        } else {
+          // Check expiry
+          const start = userData.subscription.start || 0;
+          const expire = userData.subscription.expire || 0;
+          if (Date.now() > expire) {
+            showBanner(`<div class="banner"><div class="left"><strong>Plan expired</strong><div class="small muted">Your plan has expired — we've placed you on Free plan until renewal.</div></div><div class="cta"><button class="btn btn-primary" id="renewNow">Renew</button></div></div>`);
+            document.getElementById('renewNow').addEventListener('click', () => window.location.href = 'subscription.html');
+            sessionStorage.setItem('plan', 'starter');
+             checkPlanLimitsAndSuggest(currentUser.uid)
+          } else {
+            const plan = userData.subscription.plan
+            //console.log(plan)
+            sessionStorage.setItem('plan', plan);
+            // remove banner if no other banners set; leave existing banners prioritized above
+          }
+        }
+      }
+
+    }
+
+    // refresh counts & thumbnails (limited)
+    async function refreshStats(uid) {
+
+      const statuses = Object.keys(STAT_MAP);
+      // For each status, query counts and up to 4 thumbnails (limit)
+      const thumbLimit = 4;
+
+      await Promise.all(statuses.map(async (status) => {
+        try {
+          // query nodes where meta/status == status
+          // Note: Realtime Database requires indexOn for meta/status for performant queries. Please add index to your rules.
+          const ref = database.ref(`Properties/${uid}`);
+          // We must filter by child 'meta/status' so we use orderByChild and equalTo
+          const q = ref.orderByChild('meta/status').equalTo(status);
+          const snap = await q.once('value');
+
+          // count
+          const count = snap.numChildren();
+          document.getElementById(STAT_MAP[status].countEl).textContent = count;
+
+          // thumbnails: iterate and collect up to thumbLimit most recent by createdAt if present
+          const thumbsEl = document.getElementById(STAT_MAP[status].thumbs);
+          thumbsEl.innerHTML = '';
+          // convert to array with createdAt fallback
+          const arr = [];
+          snap.forEach(child => {
+            const val = child.val();
+            arr.push({
+              id: child.key,
+              createdAt: val.meta?.createdAt || 0,
+              thumb: (val.media?.mainImageUrl && val.media.mainImageUrl[0]) || val.media?.profileImage || ''
+            });
+          });
+          // sort descending by createdAt
+          arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          arr.slice(0, thumbLimit).forEach(item => {
+            const img = document.createElement('img');
+            img.className = 'thumb';
+            img.alt = 'property';
+            img.loading = 'lazy';
+            if (item.thumb) img.src = item.thumb;
+            else img.src = 'https://via.placeholder.com/160x120?text=No+Image';
+            thumbsEl.appendChild(img);
+          });
+
+          // Show a little placeholder if none
+          if (arr.length === 0) {
+            thumbsEl.innerHTML = '<div class="small muted">No items</div>';
+          }
+
+          // after data
+          Loader.hide();
+
+        } catch (err) {
+          console.error('refreshStats error', status, err);
+          document.getElementById(STAT_MAP[status].countEl).textContent = '—';
+          document.getElementById(STAT_MAP[status].thumbs).innerHTML = '<div class="small muted">—</div>';
+        }
+      }));
+    }
+
+    // PLAN LIMITS: check and offer auto-unpublish action
+    async function checkPlanLimitsAndSuggest(uid) {
+      // Acceptable plan limits from your earlier logic
+      const plan = (currentUserData?.subscription?.plan || sessionStorage.getItem('plan') || 'starter').toLowerCase();
+      const planLimits = { trial: 7, starter: 10, profession: 20, business: 40, enterprise: 99999 };
+      const allowed = planLimits[plan] ?? 1;
+
+      // count active properties
+      const ref = database.ref(`Properties/${uid}`).orderByChild('meta/status').equalTo('Active');
+      const snap = await ref.once('value');
+      const activeList = [];
+      snap.forEach(child => {
+        const val = child.val();
+        activeList.push({
+          id: child.key,
+          createdAt: val.meta?.createdAt || 0,
+          title: val.details?.title || 'Untitled'
+        });
+      });
+
+      if (activeList.length > allowed) {
+        // show an action banner to auto-unpublish oldest
+        // Sort by createdAt ascending -> oldest first
+        activeList.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+        const extra = activeList.length - allowed;
+        showBanner(`<div class="banner">
+      <div class="left"><strong>Plan limit reached</strong><div class="small muted">You have ${activeList.length} active properties but your ${plan} plan allows ${allowed}. Choose an action to resolve.</div></div>
+      <div class="cta">
+        <button class="btn btn-ghost" id="chooseManual">Choose which to unpublish</button>
+        <button class="btn btn-primary" id="autoUnpublish">Auto-unpublish ${extra} oldest</button>
+      </div>
+    </div>`);
+        document.getElementById('autoUnpublish').addEventListener('click', async () => {
+          // confirm
+          const ok = confirm(`Auto-unpublish ${extra} oldest properties? This will set their meta/status to InActive.`);
+          if (!ok) return;
+          // Build updates object
+          const updates = {};
+          for (let i = 0; i < extra; i++) {
+            updates[`/Properties/${uid}/${activeList[i].id}/meta/status`] = 'InActive';
+          }
+          try {
+            await database.ref().update(updates);
+            showToast('Auto-unpublished oldest properties');
+            // refresh view & stats
+            await loadUserAndDashboard(uid);
+          } catch (err) {
+            console.error('autoUnpublish failed', err);
+            showToast('Failed to update properties');
+          }
+        });
+        document.getElementById('chooseManual').addEventListener('click', () => {
+          // redirect user to properties page with ?status=Active where they can manually manage
+          window.location.href = 'properties.html?status=Active';
+        });
+      }
+    }
+
+    // initial load of plan limit suggestion after user data loads
+    // call this after loadUserAndDashboard completes
+    // We can call it from loadUserAndDashboard:
+    (async function attachAutoLimitChecker() {
+      // nothing extra here; function is available to call when needed
+    })();
+
+    // small utility to format timestamp
+    function formatDate(ms) { if (!ms) return '—'; const d = new Date(ms); return d.toLocaleDateString(); }
+
+    /* End of JS */
+  </script>
+</body>
+
+</html>

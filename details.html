@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Management | Eagles hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+    <link rel="manifest" href="images/favicon_io/site.webmanifest">
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+    <script src="firebase.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --light: #f8f9fa;
+            --dark: #1a1d28;
+            --darker: #12141c;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border: #2d3246;
+            --card-bg: #212636;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 40px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--light);
+        }
+
+        .logo i {
+            color: var(--success);
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-type {
+            font-size: 13px;
+            color: var(--success);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .user-email {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .page-title h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: var(--light);
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .card-badge {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge-free {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .badge-silver {
+            background: linear-gradient(135deg, #e0e0e0, #9e9e9e);
+            color: var(--dark);
+        }
+
+        .badge-premium {
+            background: linear-gradient(135deg, #ffd166, #ef8354);
+            color: white;
+        }
+
+        .badge-gold {
+            background: linear-gradient(135deg, #ffd700, #ff9800);
+            color: var(--dark);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .plan-details {
+            margin-bottom: 20px;
+        }
+
+        .plan-details-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .plan-details-item:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features {
+            margin-top: 25px;
+        }
+
+        .plan-features h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-features h3 i {
+            color: var(--success);
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .feature-list li i {
+            color: var(--success);
+            font-size: 14px;
+            width: 24px;
+            height: 24px;
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-list li.disabled {
+            color: var(--gray);
+        }
+
+        .feature-list li.disabled i {
+            color: var(--gray);
+            background: rgba(108, 117, 125, 0.1);
+        }
+
+        .ad-limits {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .limit-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .limit-progress {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+            animation: shimmer 2s infinite;
+        }
+
+        .progress-website {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 40%;
+        }
+
+        .progress-facebook {
+            background: linear-gradient(90deg, #4267B2, #898F9C);
+            width: 20%;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin: 40px 0 20px;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            position: relative;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--light);
+            font-size: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+            color: var(--light);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #651fa3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .property-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .property-image {
+            height: 180px;
+            background-color: var(--border);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .property-details {
+            padding: 20px;
+        }
+
+        .property-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        .property-price {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .property-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(76, 201, 240, 0.15);
+            color: var(--success);
+        }
+
+        .status-inactive {
+            background: rgba(108, 117, 125, 0.15);
+            color: var(--gray);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            margin: 20px 0;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--border);
+        }
+
+        .empty-state h3 {
+            color: var(--light);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+            background: rgba(33, 38, 54, 0.9);
+            border: 1px solid var(--primary);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification-error {
+            border-left: 4px solid var(--warning);
+        }
+
+        .plan-expiry-warning {
+            background: rgba(247, 37, 133, 0.1);
+            border: 1px solid var(--warning);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .plan-expiry-warning i {
+            color: var(--warning);
+            font-size: 24px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .badge-new {
+            background: var(--warning);
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+        }
+
+        .upgrade-highlight {
+            position: relative;
+            border: 2px solid var(--success);
+            box-shadow: 0 0 20px rgba(76, 201, 240, 0.3);
+        }
+
+        .upgrade-highlight::after {
+            content: 'RECOMMENDED';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--success);
+            color: var(--dark);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* Add new styles for Google progress bar and image selection */
+        .progress-google {
+            background: linear-gradient(90deg, #4285F4, #34A853);
+        }
+
+        .carousel-inner {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 5px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--darker);
+        }
+
+        .carousel-inner::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .carousel-inner::-webkit-scrollbar-track {
+            background: var(--darker);
+            border-radius: 4px;
+        }
+
+        .carousel-inner::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .carousel-image {
+            width: 200px;
+            height: 150px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .carousel-image.selected {
+            border-color: var(--success);
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+        }
+
+        .image-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: var(--dark);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .duration-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(67, 97, 238, 0.2);
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Added horizontal scrolling for images */
+        .image-carousel {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 5px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--darker);
+        }
+
+        .image-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .image-carousel::-webkit-scrollbar-track {
+            background: var(--darker);
+            border-radius: 4px;
+        }
+
+        .image-carousel::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .property-item {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .property-item.selected {
+            border-color: var(--success);
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+        }
+
+        .property-image {
+            width: 200px;
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .property-title {
+            padding: 10px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .property-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: var(--dark);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Added for property selection */
+        .property-selection {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <span>Eagles</span> Hub
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user" id="avatarIcon"></i>
+                </div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">Loading...</div>
+                    <div class="user-type" id="userType">Loading account type...</div>
+                    <div class="user-email" id="userEmail">Loading email...</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-title">
+            <h1>Subscription Management</h1>
+            <p>View your current plan details, manage ads, and upgrade your subscription</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-gem"></i> Your Plan Details</div>
+                    <div class="card-badge" id="planBadge">Loading...</div>
+                </div>
+                <div class="card-body">
+                    <div class="plan-expiry-warning" id="expiryWarning">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div id="expiryMessage">Loading subscription status...</div>
+                    </div>
+
+                    <div class="plan-details">
+                        <div class="plan-details-item">
+                            <span>Plan Type</span>
+                            <strong id="planType">Loading...</strong>
+                        </div>
+                        <div class="plan-details-item">
+                            <span>Subscription Date</span>
+                            <strong id="startDate">Loading...</strong>
+                        </div>
+                        <div class="plan-details-item">
+                            <span>Expiration Date</span>
+                            <strong id="expiryDate">Loading...</strong>
+                        </div>
+                        <div class="plan-details-item">
+                            <span>Payment Status</span>
+                            <strong class="status-active" id="paymentStatus">Active</strong>
+                        </div>
+                    </div>
+
+                    <div class="ad-limits">
+                        <div class="limit-item">
+                            <span>Website Ads Used</span>
+                            <span id="websiteAdsUsed">0/0</span>
+                        </div>
+                        <div class="limit-progress">
+                            <div class="progress-bar progress-website" id="websiteAdsProgress"></div>
+                        </div>
+
+                        <div class="limit-item">
+                            <span>Facebook Ads Used</span>
+                            <span id="facebookAdsUsed">0/0</span>
+                        </div>
+                        <div class="limit-progress">
+                            <div class="progress-bar progress-facebook" id="facebookAdsProgress"></div>
+                        </div>
+
+                        <div class="limit-item">
+                            <span>Google Ads Used</span>
+                            <span id="googleAdsUsed">0/0</span>
+                        </div>
+                        <div class="limit-progress">
+                            <div class="progress-bar progress-google" id="googleAdsProgress"></div>
+                        </div>
+                    </div>
+
+                    <div class="plan-features">
+                        <h3><i class="fas fa-star"></i> Plan Features:</h3>
+                        <ul class="feature-list" id="planFeatures">
+                            <!-- Features will be populated here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card upgrade-highlight">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-arrow-up"></i> Upgrade Your Plan</div>
+                </div>
+                <div class="card-body">
+                    <div class="plan-features">
+                        <h3><i class="fas fa-medal"></i> Available Plans:</h3>
+                        <ul class="feature-list">
+                            <li><strong>Free:</strong> 1 Property Upload, No Ads</li>
+                            <li><strong>Silver:</strong> 3 Property Uploads, No Ads</li>
+                            <li><strong>Premium:</strong> 7 Property Uploads, 2 Website Ads</li>
+                            <li><strong>Gold:</strong> Unlimited Uploads, 5 Website Ads, 3 Social Media Ads</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-top: 30px; text-align: center;">
+                        <button class="btn btn-primary" onclick="window.location.href='subscription.html'">
+                            <i class="fas fa-arrow-up"></i> Upgrade Plan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-bullhorn"></i>
+            <h2>Create New Ad Campaign</h2>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="website">Website Ad</div>
+            <div class="tab" data-tab="facebook">Facebook Ad</div>
+            <div class="tab" data-tab="google">Google Ad</div>
+        </div>
+
+
+        <div class="tab-content active" id="website-tab">
+            <div class="card">
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Facebook Tab Content -->
+        <div class="tab-content" id="facebook-tab">
+            <div class="card">
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Google Tab Content - Added Google Ads -->
+        <div class="tab-content" id="google-tab">
+            <div class="card">
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2023 Eagles hub. All rights reserved. | Premium Real Estate Platform</p>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Ad campaign created successfully!</span>
+    </div>
+
+    <script>
+
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const properties = [];
+        let tabId
+        let selectedProperties = [];
+        let plan
+        // For demo purposes - in real app, get actual ad counts
+        let websiteAdsUsed = 0;
+        let facebookAdsUsed = 0;
+        let googleAdsUsed = 0;
+
+
+
+
+
+        // Plan features function
+        function getPlanFeatures(plan) {
+            // const plans = {
+            //     free: ['1 Property Upload', 'No Social Media Ads'],
+            //     silver: ['3 Property Uploads', 'No Ads'],
+            //     premium: ['7 Property Uploads', '2 Website Ads (15 days)'],
+            //     gold: ['Unlimited Uploads', '5 Website Ads', '3 Social Media Ads']
+            // };
+
+            const plans = {
+                starter: ['1 Property Upload', 'No Social Media Ads'],
+                profession: ['7 Property Uploads', '2 Website Ads (15 days)', '2 Social Media Ads'],
+                business: ['15 Property Uploads', '5 Website Ads (15 days)', '5 Social Media Ads'],
+                enterprise: ['Unlimited Uploads', '5 Website Ads', '5 Social Media Ads', "5 Google Ads (10 days)"]
+            };
+            return plans[plan] || [];
+        }
+
+
+        // Configuration for ad limits per plan
+        const adLimitsConfig = {
+            starter: {
+                website: 0,
+                facebook: 0,
+                google: 0
+            },
+            profession: {
+                website: 2,
+                facebook: 2,
+                google: 0
+            },
+            business: {
+                website: 5,
+                facebook: 5,
+                google: 0
+            },
+            enterprise: {
+                website: 5,
+                facebook: 5,
+                google: 5
+            }
+        };
+
+        // Fixed durations for ads (in days)
+        const adDurations = {
+            website: 15,
+            facebook: 10,
+            google: 10
+        };
+
+        // Format date from milliseconds
+        function formatDateFromMilliseconds(milliseconds) {
+            const date = new Date(milliseconds);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Calculate number of days remaining until expiration time (in ms)
+        function getDaysUntilExpiration(expiryMs) {
+            const now = Date.now(); // current time in ms
+            const diffMs = expiryMs - now; // time difference
+
+            // Convert to days (rounded up)
+            return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+        }
+
+        // Plan features function
+        function getPlanFeatures(plan) {
+            const limits = adLimitsConfig[plan];
+            const features = {
+                free: ['1 Property Upload'],
+                silver: ['7 Property Uploads'],
+                premium: ['15 Property Uploads'],
+                gold: ['Unlimited Uploads']
+            }[plan] || [];
+
+            if (limits.website > 0) features.push(`${limits.website} Website Ads`);
+            if (limits.facebook > 0) features.push(`${limits.facebook} Facebook Ads`);
+            if (limits.google > 0) features.push(`${limits.google} Google Ads`);
+
+            return features;
+        }
+
+
+
+
+        // Load user data and properties
+        async function loadUserData() {
+            const user = auth.currentUser;
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+
+            const currentCounts = await getActiveAdCounts();
+
+
+
+            websiteAdsUsed = currentCounts.website;
+            facebookAdsUsed = currentCounts.facebook;
+            googleAdsUsed = currentCounts.google;
+            // Load user profile data
+            database.ref(`Users/${user.uid}`).once('value').then(snapshot => {
+                const userData = snapshot.val();
+                if (!userData) return;
+
+                // Set user info
+                document.getElementById('userName').textContent =
+                    userData.details.firstName + ' ' + userData.details.lastName;
+                document.getElementById('userEmail').textContent = userData.details.email;
+
+                // Set user type
+                const userTypeEl = document.getElementById('userType');
+                if (userData.company.accountType === 'agent') {
+                    userTypeEl.textContent = 'Agent at ' + userData.company.companyName;
+                } else {
+                    userTypeEl.textContent = 'Property Owner';
+                }
+
+                // Set profile image
+                const userAvatar = document.querySelector('.user-avatar');
+                if (userData.media.profileImage && userData.media.profileImage !== "No Image") {
+                    userAvatar.innerHTML = `<img src="${userData.media.profileImage}" alt="Profile">`;
+                }
+
+                // Set subscription data
+                plan = userData.subscription.plan;
+                const startDateMs = userData.subscription.start;
+                const expiryDateMs = userData.subscription.expire;
+
+                document.getElementById('planBadge').className = `card-badge badge-${plan}`;
+                document.getElementById('planBadge').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+                document.getElementById('planType').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+                document.getElementById('startDate').textContent = formatDateFromMilliseconds(startDateMs);
+                document.getElementById('expiryDate').textContent = formatDateFromMilliseconds(expiryDateMs);
+
+                // Calculate days until expiration
+                const daysUntilExpiry = getDaysUntilExpiration(expiryDateMs);
+                const expiryWarning = document.getElementById('expiryWarning');
+                const expiryMessage = document.getElementById('expiryMessage');
+                console.log(daysUntilExpiry);
+                if (daysUntilExpiry < 10) {
+                    expiryMessage.innerHTML = `Your subscription expires in <strong>${daysUntilExpiry} days</strong>. Renew now to continue enjoying premium features.`;
+                } else {
+                    expiryWarning.style.display = 'none';
+                }
+
+                // Set plan features
+                const features = getPlanFeatures(plan);
+                const featuresList = document.getElementById('planFeatures');
+                featuresList.innerHTML = '';
+
+                features.forEach(feature => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="fas fa-check"></i> ${feature}`;
+                    featuresList.appendChild(li);
+                });
+
+                // Add disabled features based on plan
+                const allFeatures = [
+                    '7 Property Uploads',
+                    '2 Website Ads (15 days)',
+                    'Social Media Ads',
+                    'Priority Support',
+                    'Featured Listings'
+                ];
+
+                if (plan === 'starter') {
+                    allFeatures.forEach(feature => {
+                        if (!features.includes(feature)) {
+                            const li = document.createElement('li');
+                            li.className = 'disabled';
+                            li.innerHTML = `<i class="fas fa-times"></i> ${feature}`;
+                            featuresList.appendChild(li);
+                        }
+                    });
+                }
+
+                // Set ad limits based on plan
+                let websiteAdsMax = 0;
+                let facebookAdsMax = 0;
+
+                switch (plan) {
+                    case 'premium':
+                        websiteAdsMax = 2;
+                        break;
+                    case 'gold':
+                        websiteAdsMax = 5;
+                        facebookAdsMax = 3;
+                        break;
+                }
+
+
+                // Set ad limits based on plan
+                const limits = adLimitsConfig[plan] || { website: 0, facebook: 0, google: 0 };
+
+
+
+                document.getElementById('websiteAdsUsed').textContent =
+                    `${websiteAdsUsed}/${limits.website}`;
+                document.getElementById('facebookAdsUsed').textContent =
+                    `${facebookAdsUsed}/${limits.facebook}`;
+                document.getElementById('googleAdsUsed').textContent =
+                    `${googleAdsUsed}/${limits.google}`;
+
+                document.getElementById('websiteAdsProgress').style.width =
+                    Math.min(100, (websiteAdsUsed / limits.website) * 100) + '%';
+                document.getElementById('facebookAdsProgress').style.width =
+                    Math.min(100, (facebookAdsUsed / limits.facebook) * 100) + '%';
+                document.getElementById('googleAdsProgress').style.width =
+                    Math.min(100, (googleAdsUsed / limits.google) * 100) + '%';
+
+                // Handle ad tabs based on plan
+                const tabs = document.querySelectorAll('.tab');
+                tabs.forEach(tab => {
+                    const adType = tab.dataset.tab;
+                    if (limits[adType] <= 0) {
+
+
+                        tab.classList.add('disabled');
+                    } else {
+
+                        tab.classList.remove('disabled');
+                        createTabForm(adType);
+                        populatePropertySelection(properties)
+                        // console.log(properties);
+
+
+                    }
+                });
+            });
+        }
+
+
+        // Form submission
+
+
+        async function processTest() {
+
+            // console.log(selectedProperty);
+            console.log(selectedProperties);
+            if (selectedProperties.length === 0) {
+                alert('Please select at least one property');
+                return;
+            }
+            // console.log(selectedProperty);
+            // console.log(selectedProperties);
+
+
+            for (const properties of selectedProperties) {
+                const property = properties.property
+                console.log(property);
+
+                const name = property.details.title || ''
+                const description = property.details.description || ''
+                const price = property.details.price || ''
+                const currency = property.details.currency || ''
+                const home_listing_id = String(property.meta.pushKey)
+                const neighbourhood = property.location.street
+                const state = property.location.state
+                const city = property.location.city
+                const address = property.location.street
+                const status = property.status || 'pause'
+                const availability = property.availability || 'for_sale'
+                const condition = property.condition || 'new'
+                const url = property.url || 'eagleshub.web.app'
+
+
+                // safe handling of property.media and its fields
+                const media = (property && property.media) ? property.media : {};
+
+                // ensure both variables are arrays (handle single-string values too)
+                const additional_images = Array.isArray(media.decImage)
+                    ? media.decImage
+                    : (media.decImage ? [media.decImage] : []);
+
+                const images = Array.isArray(media.mainImageUrl)
+                    ? media.mainImageUrl
+                    : (media.mainImageUrl ? [media.mainImageUrl] : []);
+
+                // pick a single main image if you need one
+                const image = images[0] || additional_images[0] || null;
+
+                // combine, filter out falsy values, join with semicolon
+                const additional_image_link = [...additional_images, ...images].filter(Boolean).join(';');
+
+
+                const payload = {
+                    name: name || '',
+                    description: description || '',
+                    price: price || '',
+                    currency: currency || '',
+                    home_listing_id: home_listing_id,
+                    neighbourhood: neighbourhood,
+                    state: state,
+                    city: city,
+                    address: address,
+                    additional_image_link: additional_image_link,
+                    status: status || '',
+                    availability: availability || '',
+                    condition: condition || '',
+                    url: url || '',
+                    image: image
+                };
+
+                console.log(payload);
+
+                try {
+                    const response = await fetch('http://localhost:4000/forward', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    // Parse the response
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        console.log("✅ Feed sent successfully:", data);
+                        alert("Feeds uploaded successfully!");
+                    } else {
+                        console.error("❌ Error from server:", data);
+                        alert("Error: " + (data.error || "Something went wrong"));
+                    }
+                } catch (err) {
+                    console.error("⚠️ Request failed:", err);
+                    alert("Network error — check your internet or server connection");
+                }
+            }
+
+
+        }
+
+        // Function to create ads
+        async function createAd(adType) {
+            const user = auth.currentUser;
+            if (!user) return;
+            console.log("calling");
+
+
+            // // 1. Validate selection
+            if (selectedProperties.length === 0) {
+                alert('Please select at least one property');
+                return;
+            }
+
+            // 2. Get current ad counts
+            const currentCounts = await getActiveAdCounts();
+
+            // 3. Check against plan limits
+            const limits = adLimitsConfig[plan];
+            if (currentCounts[adType] + selectedProperties.length > limits[adType]) {
+                alert(`You've reached your ${adType} ad limit for this plan.`);
+                return;
+            }
+
+            // 4. Create campaigns
+            const campaignPromises = [];
+            const userId = user.uid;
+            const days = adDurations[adType];
+
+            console.log(selectedProperties);
+
+
+            selectedProperties.forEach(property => {
+                console.log(property);
+                const campaignData = {
+                    type: adType,
+                    startTime: Date.now(),
+                    endTime: Date.now() + (days * 86400000),
+                    endDate: days,
+
+                };
+
+                if (adType === "website") {
+                    campaignData.status = "active"
+                } else {
+                    campaignData.status = "Review"
+                }
+
+
+                // Add campaign to property's subscription node
+                const propertyRef = database.ref(`Properties/${userId}/${property.id}/subscription/adsCampaigns/${adType}`);
+                campaignPromises.push(propertyRef.set(campaignData));
+            });
+
+            if (adType !== "website") {
+                processTest();
+            }
+
+            // 5. Execute all operations
+            Promise.all(campaignPromises)
+                .then(() => {
+                    // Show success notification
+                    const notification = document.getElementById('notification');
+                    notification.querySelector('span').textContent =
+                        `${adType.charAt(0).toUpperCase() + adType.slice(1)} ad created successfully!`;
+                    notification.classList.add('notification-success', 'show');
+                    loadUserData() // Refresh counts
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 3000);
+
+                    // Clear selection
+                    selectedProperties.length = 0;
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const container = activeTab.querySelector('.image-carousel');
+                    container.querySelectorAll('.property-item').forEach(item => {
+                        item.classList.remove('selected');
+                        const counter = item.querySelector('.property-counter');
+                        if (counter) counter.remove();
+                    });
+                })
+                .catch(error => {
+                    console.error('Error creating campaigns:', error);
+                    alert('Failed to create campaigns. Please try again.');
+                });
+        }
+
+        // Get active ad counts
+        async function getActiveAdCounts() {
+            return new Promise(resolve => {
+                const user = auth.currentUser;
+                const now = Date.now();
+                const counts = { website: 0, facebook: 0, google: 0 };
+
+                database.ref(`Properties/${user.uid}`).once('value', snapshot => {
+                    snapshot.forEach(propertySnapshot => {
+                        const property = propertySnapshot.val();
+                        if (property.subscription && property.subscription.planCampaigns) {
+                            const campaigns = property.subscription.planCampaigns;
+
+                            // Check each ad type
+                            ['website', 'facebook', 'google'].forEach(type => {
+                                if (campaigns[type] && campaigns[type].endTime > now) {
+                                    counts[type]++;
+                                }
+                            });
+                        }
+                    });
+                    resolve(counts);
+                });
+            });
+        }
+
+
+
+        // Create dynamic form for ad tabs
+        function createTabForm(adType) {
+
+
+            const tabContent = document.getElementById(`${adType}-tab`);
+            if (!tabContent || tabContent.querySelector('.ad-form')) return;
+
+            tabContent.querySelector('.card-body').innerHTML = `
+                    <form class="ad-form" id="${adType}-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Ad Type</label>
+                                <div class="form-control" disabled>
+                                    ${adType.charAt(0).toUpperCase() + adType.slice(1)} Ad Type
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Duration</label>
+                                <div class="form-control" style="display: flex; align-items: center; justify-content: space-between;">
+                                    <span>${adDurations[adType]} Days</span>
+                                    <span class="duration-badge">Fixed Duration</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Properties (Select up to 3)</label>
+                            <div class="image-carousel" id="propertySelection">
+                                <!-- Property selection will be populated here -->
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-top: 20px;">
+                            <button type="button" class="btn btn-primary" onclick="createAd('${adType}')">
+                                <i class="fas fa-paper-plane"></i> Create Ad Campaign
+                            </button>
+                        </div>
+                    </form>
+                `;
+        }
+
+
+        // Populate property selection with images
+        function populatePropertySelection(properties) {
+            const activeTab = document.querySelector('.tab-content.active');
+            const container = activeTab.querySelector('.image-carousel');
+            container.innerHTML = '';
+
+            // Reset counter for this tab
+            let counter = 1;
+
+            properties.forEach(property => {
+                const mainImage = property.media.mainImageUrl && property.media.mainImageUrl.length > 0
+                    ? property.media.mainImageUrl[0]
+                    : 'https://via.placeholder.com/200x150?text=No+Image';
+
+                const propertyEl = document.createElement('div');
+                propertyEl.className = 'property-item property-selection';
+                propertyEl.dataset.id = property.meta.pushKey;
+
+                propertyEl.innerHTML = `
+            <div class="property-image" style="background-image: url('${mainImage}')"></div>
+            <div class="property-title">${property.details.title}</div>
+        `;
+
+                container.appendChild(propertyEl);
+
+                // Add click event
+                propertyEl.addEventListener('click', function () {
+                    const propertyId = this.dataset.id;
+                    const isSelected = this.classList.toggle('selected');
+
+                    if (isSelected) {
+                        // Add to selected properties
+                        const counterDiv = document.createElement('div');
+                        counterDiv.className = 'property-counter';
+                        counterDiv.textContent = counter;
+                        this.appendChild(counterDiv);
+
+                        property.meta.adsType = tabId;
+                        // Add to global array
+                        selectedProperties.push({
+                            id: propertyId,
+                            property: property
+                        });
+
+                        counter++;
+                    } else {
+                        // Remove from selected properties
+                        const index = selectedProperties.findIndex(p => p.id === propertyId);
+                        if (index !== -1) {
+                            selectedProperties.splice(index, 1);
+                        }
+
+                        // Remove counter
+                        const counterEl = this.querySelector('.property-counter');
+                        if (counterEl) counterEl.remove();
+
+                        // Decrement counter and update other counters
+                        counter--;
+                        updateCounters();
+                    }
+
+                    console.log("Selected Properties:", selectedProperties);
+                });
+            });
+        }
+
+        // Update counters after any change
+        function updateCounters() {
+            const container = document.querySelector('.tab-content.active .image-carousel');
+            const items = container.querySelectorAll('.property-item.selected');
+
+            items.forEach((item, index) => {
+                let counter = item.querySelector('.property-counter');
+                if (!counter) {
+                    counter = document.createElement('div');
+                    counter.className = 'property-counter';
+                    item.appendChild(counter);
+                }
+                counter.textContent = index + 1;
+            });
+        }
+
+
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function () {
+            // Listen for auth state changes
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // Load active properties
+                    database.ref(`Properties/${user.uid}`).once('value').then(snapshot => {
+
+                        snapshot.forEach(childSnapshot => {
+                            const property = childSnapshot.val();
+                            if (property.meta.status === "Active") {
+                                properties.push({
+                                    ...property
+                                });
+                            }
+                        });
+
+
+                    });
+                    loadUserData();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Tab functionality
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    if (tab.classList.contains('disabled')) return;
+
+                    // Remove active class from all tabs and content
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+
+                    // Show corresponding content
+                    tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+
+                    // // Populate property selection
+                    populatePropertySelection(properties);
+                    selectedProperties = []
+
+
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>

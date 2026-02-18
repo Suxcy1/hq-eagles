@@ -1,0 +1,265 @@
+/* ===========================
+   Full CSS for add-property page
+   (Replace your existing add-property.css with this)
+   =========================== */
+
+/* Basic page + desktop forced layout */
+html, body {
+  min-width: 1024px; /* forces desktop layout; mobile will have horizontal scroll */
+  margin: 0;
+  padding: 20px;
+  background-color: #f5f7fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Container */
+.container {
+  max-width: 1100px;
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Form layout */
+.property-form {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Sections */
+.form-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.form-section h3 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+}
+
+/* Form elements */
+.form-group {
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4a5568;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #4299e1;
+  outline: none;
+}
+
+/* Grid layout for addresses and categories - fixed 2 columns on desktop */
+.address-grid, .category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+/* Upload group styling */
+.upload-group input[type="file"] {
+  width: 100%;
+  padding: 1rem;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  background: #f8f9fa;
+  margin: 0.5rem 0;
+  box-sizing: border-box;
+}
+.upload-group .file-note {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* Submit button */
+.submit-btn {
+  width: 100%;
+  padding: 12px 25px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.submit-btn:hover {
+  background: #2b8fda;
+}
+
+/* Progress dialog */
+.progress-dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+.progress-dialog-content { text-align: center; }
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid white;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =========================
+   AI controls UI
+   ========================= */
+
+/* wrapper for AI controls - hidden by default, shown when .show is added */
+.ai-controls {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ai-controls.show {
+  display: flex;
+}
+
+/* Primary "Improve description" button */
+.ai-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(180deg,#3aa0e8,#2b8fda);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(43,143,218,0.15), inset 0 -1px 0 rgba(255,255,255,0.08);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  width: fit-content;
+}
+.ai-primary-btn:active { transform: translateY(1px); }
+.ai-primary-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+/* hint text exact wording user requested */
+.ai-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #556;
+  line-height: 1.3;
+}
+
+/* Switch (styled checkbox) */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 30px;
+}
+
+.switch input { display: none; }
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #d1d5db; /* grey when off */
+  border-radius: 999px;
+  transition: background .18s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35);
+}
+
+/* knob */
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 6px 14px rgba(11,22,40,0.08);
+  transition: transform .18s cubic-bezier(.2,.9,.3,1);
+}
+
+/* when checked: blue background, move knob to right */
+.switch input:checked + .slider {
+  background: #2b8fda;
+}
+.switch input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* Toggle label text */
+.toggle-label {
+  font-weight: 600;
+  color: #2d3748;
+  user-select: none;
+}
+
+/* Temporary bottom-right message */
+#tempMsg {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  background: rgba(17,24,39,0.95);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 9999;
+  font-size: 13px;
+}
+#tempMsg.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Small responsive tweak for switch knob on narrower viewport */
+@media (max-width: 480px) {
+  .switch { width: 46px; height: 26px; }
+  .slider:before { height: 20px; width: 20px; left: 3px; top: 3px; }
+  .switch input:checked + .slider:before { transform: translateX(18px); }
+}
+
+

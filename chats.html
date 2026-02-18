@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+    <link rel="stylesheet" href="chat.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/image/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/image/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/image/favicon_io/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/image/favicon_io/android-chrome-192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/image/favicon_io/android-chrome-512.png">
+    <link rel="manifest" href="/image/favicon_io/site.webmanifest">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Your Chats</h1>
+        <div id="chatList" class="chat-list"></div>
+        <button id="newChatBtn" class="new-chat-btn">+ Start New Chat</button>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+
+    <script src="firebase.js"></script>
+    <script src="chat.js"></script>
+</body>
+
+</html>

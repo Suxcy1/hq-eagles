@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Email Verification — ElitePro</title>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+  <link rel="manifest" href="images/favicon_io/site.webmanifest">
+  <!-- Firebase compat (kept as compat per request) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+  <script src="firebase.js"></script>
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #fff;
+      --muted: #6b7280;
+      --accent: #0f62fe;
+      --accent-2: #00b894;
+      --danger: #ff4d4f;
+      --radius: 12px;
+      --shadow: 0 8px 30px rgba(17, 24, 39, 0.06);
+      --maxWidth: 920px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      background: linear-gradient(180deg, var(--bg), #eef4ff);
+      margin: 0;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 32px
+    }
+
+    .stage {
+      width: 100%;
+      max-width: var(--maxWidth)
+    }
+
+    .card {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 28px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden
+    }
+
+    @media (max-width:900px) {
+      .card {
+        grid-template-columns: 1fr;
+        padding: 18px
+      }
+    }
+
+    .left {
+      padding: 40px
+    }
+
+    .step {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em
+    }
+
+    h1 {
+      margin: 10px 0 6px;
+      font-size: 24px
+    }
+
+    p.lead {
+      color: var(--muted);
+      margin: 0 0 18px
+    }
+
+    .illustration {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(15, 98, 254, 0.06), rgba(0, 184, 148, 0.02));
+      border-radius: 10px;
+      border: 1px solid rgba(15, 98, 254, 0.04)
+    }
+
+    .illustration svg {
+      width: 220px;
+      height: 140px
+    }
+
+    .actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent), #3b82f6);
+      color: white
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(15, 98, 254, 0.12)
+    }
+
+    .right {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(250, 250, 255, 0.8));
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center
+    }
+
+    .status-bubble {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #e6f0ff, #f2fff8);
+      box-shadow: 0 8px 20px rgba(16, 24, 40, 0.06);
+      margin-bottom: 16px
+    }
+
+    .status-title {
+      font-weight: 800;
+      margin-bottom: 6px
+    }
+
+    .status-sub {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center
+    }
+
+    .progress-wrap {
+      width: 100%;
+      margin-top: 18px
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: rgba(15, 98, 254, 0.08);
+      border-radius: 999px;
+      overflow: hidden
+    }
+
+    .progress-bar>i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #60a5fa);
+      border-radius: 999px;
+      transition: width 0.2s linear
+    }
+
+    .timer-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 14px
+    }
+
+    .message {
+      margin-top: 14px;
+      width: 100%;
+      text-align: center
+    }
+
+    .msg-success {
+      color: var(--accent-2);
+      font-weight: 700
+    }
+
+    .msg-error {
+      color: var(--danger);
+      font-weight: 700
+    }
+
+    .support {
+      margin-top: 18px;
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center
+    }
+
+    .support a {
+      color: var(--accent);
+      font-weight: 700
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    .hidden {
+      display: none
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 28px;
+      background: #111827;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(17, 24, 39, 0.2);
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .toast.hidden {
+      display: none
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 12, 20, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 60
+    }
+
+    .overlay .spinner {
+      width: 140px;
+      height: 84px;
+      border-radius: 12px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow)
+    }
+
+    footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px
+    }
+  </style>
+</head>
+
+<body>
+  <main class="stage">
+    <div class="card" role="main" aria-labelledby="verify-title">
+      <section class="left" aria-label="Email verification instructions">
+        <div class="step">Step 2 of 2</div>
+        <h1 id="verify-title">Verify your email address</h1>
+        <p class="lead">We've sent a verification message to the email address you used to register. Click the button
+          below to (re)send the verification email. When you confirm it, we'll sign you in automatically.</p>
+
+        <div class="illustration" aria-hidden="true">
+          <!-- inline SVG -->
+          <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#60a5fa" stop-opacity="0.9" />
+                <stop offset="1" stop-color="#0f172a" stop-opacity="0.05" />
+              </linearGradient>
+            </defs>
+            <rect width="600" height="400" rx="14" fill="url(#g1)" />
+            <g transform="translate(80,60)">
+              <rect x="0" y="0" width="440" height="220" rx="12" fill="#fff" opacity="0.95" />
+              <path d="M20 30 L220 130 L420 30" stroke="#3b82f6" stroke-width="6" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <rect x="28" y="46" width="384" height="128" rx="8" fill="#f8fafc" />
+              <circle cx="360" cy="60" r="20" fill="#34d399" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="actions">
+          <button id="verifyButton" class="btn btn-primary" type="button" disabled>Send verification email</button>
+          <button id="helpBtn" class="btn btn-ghost" type="button">Why am I seeing this?</button>
+        </div>
+
+        <div class="message" aria-live="polite">
+          <div id="sentMessage" class="msg-success hidden">A verification email has been sent. Check your inbox (and
+            spam).</div>
+          <div id="resendMessage" class="msg-success hidden">Verification email resent. Please check your inbox.</div>
+          <div id="errorMessage" class="msg-error hidden">Error sending verification. Try again later.</div>
+        </div>
+
+        <div class="support">Don't receive emails? <a id="contactSupport"
+            href="mailto:hello@propdirect.ng?subject=Verification%20help">Contact support</a></div>
+      </section>
+
+      <aside class="right" aria-label="Verification status">
+        <div class="status-bubble" aria-hidden="true">
+          <div class="icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M2 6.5C2 5.7 2.7 5 3.5 5H20.5C21.3 5 22 5.7 22 6.5V17.5C22 18.3 21.3 19 20.5 19H3.5C2.7 19 2 18.3 2 17.5V6.5Z"
+                stroke="#0f172a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M3 7L12 13L21 7" stroke="#0f172a" stroke-width="1.2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="status-title">Waiting for verification</div>
+        <div class="status-sub">We will sign you in automatically when your email is verified.</div>
+
+        <div class="progress-wrap" aria-hidden="false">
+          <div class="progress-bar" aria-hidden="true"><i id="progressFill"></i></div>
+          <div class="timer-row"><span id="timeLeft">60s</span><span id="resendsLeft">Resends left: 3</span></div>
+        </div>
+
+        <div class="message" aria-live="polite">
+          <div id="inlineInfo" class="muted" style="margin-top:12px">You can resend up to <strong
+              id="maxResendDisplay">3</strong> times.</div>
+          <div id="helpText" class="muted hidden" style="margin-top:10px">Tip: Check your spam/junk folder if you don't
+            see the email.</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>Need help? <a href="mailto:hello@propdirect.ng">hello@propdirect.ng</a></footer>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"><strong id="toastText">Saved</strong></div>
+
+  <!-- Progress overlay (inline display:none to force hidden on load) -->
+  <div id="overlay" class="overlay hidden" aria-hidden="true" style="display:none;">
+    <div class="spinner">
+      <svg width="48" height="48" viewBox="0 0 50 50" style="margin-bottom:8px">
+        <path fill="#2563eb" d="M25 5a20 20 0 1 0 20 20A20 20 0 0 0 25 5zm0 36a16 16 0 1 1 16-16 16 16 0 0 1-16 16z">
+        </path>
+      </svg>
+      <div style="font-weight:700;color:#111827">Sending...</div>
+    </div>
+  </div>
+
+  <script>
+    /* Fixed verification script:
+       - overlay controlled via style.display (reliable)
+       - progress starts at 0%
+       - no auto-send on load
+       - timers cleared reliably
+    */
+    const COOLDOWN = 60;
+    const MAX_RESENDS = 3;
+
+    const verifyButton = document.getElementById('verifyButton');
+    const helpBtn = document.getElementById('helpBtn');
+    const sentMessage = document.getElementById('sentMessage');
+    const resendMessage = document.getElementById('resendMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const overlay = document.getElementById('overlay');
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+    const progressFill = document.getElementById('progressFill');
+    const timeLeftEl = document.getElementById('timeLeft');
+    const resendsLeftEl = document.getElementById('resendsLeft');
+    const maxResendDisplay = document.getElementById('maxResendDisplay');
+    const helpText = document.getElementById('helpText');
+    const inlineInfo = document.getElementById('inlineInfo');
+
+    let currentUser = null;
+    let countdownTimerId = null;
+    let pollTimerId = null;
+    let cooldownRemaining = COOLDOWN;
+    let resendCount = 0;
+    let isSending = false;
+
+    // initial UI
+    maxResendDisplay.textContent = MAX_RESENDS;
+    resendsLeftEl.textContent = `Resends left: ${MAX_RESENDS}`;
+    timeLeftEl.textContent = `${COOLDOWN}s`;
+    progressFill.style.width = '0%';
+    verifyButton.disabled = true;
+    overlay.style.display = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    function hideAllMessages() {
+      sentMessage.classList.add('hidden');
+      resendMessage.classList.add('hidden');
+      errorMessage.classList.add('hidden');
+    }
+    function showToast(msg, ms = 2200) {
+      if (!toast || !toastText) return;
+      toastText.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), ms);
+    }
+    function showOverlay(show) {
+      overlay.style.display = show ? 'flex' : 'none';
+      overlay.setAttribute('aria-hidden', show ? 'false' : 'true');
+    }
+
+    function clearTimers() {
+      if (countdownTimerId) { clearInterval(countdownTimerId); countdownTimerId = null; }
+      if (pollTimerId) { clearInterval(pollTimerId); pollTimerId = null; }
+    }
+
+    function startPoll() {
+      if (pollTimerId) return;
+      console.log('startPoll: started');
+      pollTimerId = setInterval(async () => {
+        try {
+          const u = firebase.auth().currentUser;
+          if (!u) return;
+          await u.reload();
+          if (u.emailVerified) {
+            clearTimers();
+            showSuccessAndRedirect();
+          }
+        } catch (e) {
+          console.error('poll error', e);
+        }
+      }, 2500);
+    }
+
+    function showSuccessAndRedirect() {
+      hideAllMessages();
+      showToast('Email verified. Redirecting...', 1000);
+      setTimeout(() => window.location.href = 'dashboard.html', 900);
+    }
+
+    function updateProgress() {
+      const elapsed = Math.max(0, COOLDOWN - cooldownRemaining);
+      const pct = Math.round((elapsed / COOLDOWN) * 100);
+      progressFill.style.width = `${pct}%`;
+      timeLeftEl.textContent = `${cooldownRemaining}s`;
+      resendsLeftEl.textContent = `Resends left: ${Math.max(0, MAX_RESENDS - resendCount)}`;
+    }
+
+    function startCooldown(seconds = COOLDOWN) {
+      cooldownRemaining = seconds;
+      updateProgress();
+      if (countdownTimerId) clearInterval(countdownTimerId);
+      countdownTimerId = setInterval(() => {
+        cooldownRemaining -= 1;
+        if (cooldownRemaining < 0) cooldownRemaining = 0;
+        updateProgress();
+        if (cooldownRemaining <= 0) {
+          clearInterval(countdownTimerId);
+          countdownTimerId = null;
+          verifyButton.disabled = false;
+          helpText.classList.remove('hidden');
+          inlineInfo.textContent = 'You can resend the verification email now.';
+        }
+      }, 1000);
+    }
+
+    async function sendVerification() {
+      console.log('sendVerification called');
+      if (!currentUser) { showToast('No signed-in user. Redirecting...'); setTimeout(() => window.location.href = 'index.html', 900); return; }
+      if (isSending) { console.log('already sending - ignored'); return; }
+      if (resendCount >= MAX_RESENDS) {
+        errorMessage.textContent = 'Resend limit reached. Contact support.';
+        errorMessage.classList.remove('hidden');
+        return;
+      }
+
+      isSending = true;
+      verifyButton.disabled = true;
+      hideAllMessages();
+      showOverlay(true);
+
+      try {
+        await currentUser.sendEmailVerification();
+        resendCount += 1;
+        if (resendCount === 1) sentMessage.classList.remove('hidden');
+        else { resendMessage.classList.remove('hidden'); showToast('Verification email resent', 1500); }
+        helpText.classList.add('hidden');
+        clearTimers();
+        startCooldown(COOLDOWN);
+        startPoll();
+      } catch (err) {
+        console.error('sendEmailVerification error', err);
+        errorMessage.textContent = 'Error sending verification. Try again later.';
+        errorMessage.classList.remove('hidden');
+        verifyButton.disabled = false;
+      } finally {
+        isSending = false;
+        showOverlay(false);
+      }
+    }
+
+    // handlers
+    helpBtn.addEventListener('click', () => { showToast('Check your inbox & spam folder. If still missing, contact support.', 4200); helpText.classList.remove('hidden'); });
+    verifyButton.addEventListener('click', (e) => { e.preventDefault(); sendVerification(); });
+    verifyButton.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendVerification(); } });
+
+    // guard
+    if (!window.firebase) console.error('Firebase not found. Ensure firebase.js or SDK included before this script.');
+
+    // auth state
+    firebase.auth().onAuthStateChanged(user => {
+      console.log('onAuthStateChanged ->', !!user, 'emailVerified=', user ? user.emailVerified : 'n/a');
+      currentUser = user;
+      if (!user) {
+        // not signed in -> landing
+        window.location.href = 'index.html';
+        return;
+      }
+      if (user.emailVerified) {
+        showToast('Email already verified — redirecting...');
+        setTimeout(() => window.location.href = 'dashboard.html', 700);
+        return;
+      }
+      // unverified
+      verifyButton.disabled = false;
+      // light poll so if they clicked verification from another tab it is detected quickly
+      startPoll();
+    });
+
+    // initial visual
+    updateProgress();
+  </script>
+</body>
+
+</html>

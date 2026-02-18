@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Support — Conversations List</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+  <link rel="manifest" href="images/favicon_io/site.webmanifest">
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --card: #fff;
+      --accent: #065fd4;
+      --muted: #6b7280
+    }
+
+    body {
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      margin: 0;
+      background: var(--bg);
+      color: #0b1220
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 28px auto;
+      padding: 18px
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 6px 18px rgba(12, 15, 20, .06)
+    }
+
+    .list {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(10, 20, 40, .04)
+    }
+
+    .left {
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ecf6ff, #f7fbff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--accent)
+    }
+
+    .meta h3 {
+      margin: 0;
+      font-size: 15px
+    }
+
+    .meta p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer
+    }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid rgba(6, 95, 212, .12);
+      color: var(--accent);
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .disabled {
+      opacity: .55;
+      pointer-events: none
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Conversations</h1>
+      <div>
+        <button id="newBtn" class="btn disabled" title="Sign in to create a new chat">New chat</button>
+      </div>
+    </header>
+
+    <main class="card">
+      <div id="list" class="list">
+        <div class="small">Loading...</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase v9.6 compat + user-provided firebase.js (must initialize firebase app there, using compat SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="firebase.js"></script>
+
+  <script>
+    /**
+     * index.html — conversation list
+     * - DOES NOT show DB path in UI
+     * - waits for Firebase to exist, then listens for auth state changes
+     * - only loads conversations for the authenticated user
+     * - New chat button disabled until user is authenticated
+     */
+
+    const listEl = document.getElementById('list');
+    const newBtn = document.getElementById('newBtn');
+
+    function fmtTime(iso) { return new Date(iso).toLocaleString(); }
+    function genId() { return 'message' + (Math.floor(Math.random() * 90000) + 1000); }
+
+    let userid = null;          // set only after auth
+    let baseRef = null;         // firebase database ref for Services/${userid}
+    let initialized = false;
+
+    function renderLoading() { listEl.innerHTML = '<div class="small">Loading...</div>'; }
+
+    function renderEmpty() { listEl.innerHTML = '<div class="small">No conversations yet.</div>'; }
+
+    function renderList(items) {
+      listEl.innerHTML = '';
+      if (!items || items.length === 0) { renderEmpty(); return; }
+      for (const it of items) {
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.innerHTML = `
+          <div class="left">
+            <div class="avatar">${String(it.id).slice(-3)}</div>
+            <div class="meta">
+              <h3>${it.id}</h3>
+              <p>${it.meta.lastMessage || ''}</p>
+            </div>
+          </div>
+          <div class="controls">
+            <div class="small">${it.meta.lastAt ? fmtTime(it.meta.lastAt) : ''}</div>
+            <button data-id="${it.id}" class="ghost">Open</button>
+          </div>
+        `;
+        listEl.appendChild(el);
+      }
+
+      // wire open buttons
+      listEl.querySelectorAll('.ghost').forEach(b => b.addEventListener('click', e => {
+        const id = e.currentTarget.getAttribute('data-id');
+        const u = new URL(location.href);
+        u.pathname = location.pathname.replace(/[^/]*$/, 'support-chat.html');
+        u.searchParams.set('messageId', id);
+        u.searchParams.set('userid', userid);
+        location.href = u.toString();
+      }));
+    }
+
+    async function fetchConversationsOnce() {
+      if (!baseRef) return renderEmpty();
+      try {
+        const snap = await baseRef.once('value');
+        const data = snap.val() || {};
+        const arr = Object.keys(data).map(k => ({ id: k, meta: data[k].meta || {} }));
+        arr.sort((a, b) => new Date(b.meta.lastAt || b.meta.createdAt) - new Date(a.meta.lastAt || a.meta.createdAt));
+        renderList(arr);
+      } catch (err) {
+        console.error('fetchConversationsOnce error', err);
+        listEl.innerHTML = '<div class="small">Failed to load conversations.</div>';
+      }
+    }
+
+    // Realtime listener: updates UI whenever Services/${userid} changes
+    function attachRealtimeListener() {
+      if (!baseRef) return;
+      baseRef.on('value', snapshot => {
+        const data = snapshot.val() || {};
+        const arr = Object.keys(data).map(k => ({ id: k, meta: data[k].meta || {} }));
+        arr.sort((a, b) => new Date(b.meta.lastAt || b.meta.createdAt) - new Date(a.meta.lastAt || a.meta.createdAt));
+        renderList(arr);
+      }, err => {
+        console.error('Realtime listener error', err);
+      });
+    }
+
+    // Create a new conversation under Services/${userid}/${id}
+    async function createConversation(id) {
+      if (!baseRef) return;
+      const meta = { id, createdAt: new Date().toISOString(), lastMessage: 'Conversation created', status: 'open' };
+      await firebase.database().ref(`Services/Support/${userid}/${id}/meta`).set(meta);
+      const msgsRef = firebase.database().ref(`Services/Support/${userid}/${id}/messages`);
+      const key = msgsRef.push().key;
+      const first = { text: 'Conversation created', time: new Date().toISOString(), status: 'sent', from: 'user' };
+      await msgsRef.child(key).set(first);
+      // navigation to chat page
+      const u = new URL(location.href);
+      u.pathname = location.pathname.replace(/[^/]*$/, 'support.html');
+      u.searchParams.set('messageId', id);
+      u.searchParams.set('userid', userid);
+      location.href = u.toString();
+    }
+
+    // Called when the user is authenticated (or when we determine userid)
+    function onUserReady(uid) {
+      userid = uid;
+      baseRef = firebase.database().ref(`Services/Support/${userid}`);
+      // enable new button
+      newBtn.classList.remove('disabled');
+      newBtn.title = '';
+      // attach realtime listener and fetch once
+      attachRealtimeListener();
+      fetchConversationsOnce();
+    }
+
+    // Wait for firebase to be loaded, then set up auth listener
+    function waitForFirebaseAndAuth() {
+      if (window.firebase && firebase.auth && firebase.database) {
+        if (initialized) return;
+        initialized = true;
+
+        // If the user is already signed in, onAuthStateChanged will fire immediately with currentUser
+        firebase.auth().onAuthStateChanged(user => {
+          if (user && user.uid) {
+            onUserReady(user.uid);
+          } else {
+            // If no auth user, check URL param 'userid' as explicit override (rare)
+            const urlParam = new URL(location.href).searchParams.get('userid');
+            if (urlParam) {
+              onUserReady(urlParam);
+            } else {
+              // user not signed in: keep New chat disabled and show prompt
+              listEl.innerHTML = '<div class="small">Sign in to view conversations.</div>';
+              newBtn.classList.add('disabled');
+              newBtn.title = 'Sign in to create a new chat';
+            }
+          }
+        }, err => {
+          console.error('auth state listener error', err);
+        });
+      } else {
+        setTimeout(waitForFirebaseAndAuth, 150);
+      }
+    }
+
+    // new chat button
+    newBtn.addEventListener('click', async () => {
+      if (!userid) return alert('Sign in first');
+      newBtn.classList.add('disabled');
+      try {
+        const id = genId();
+        await createConversation(id);
+      } catch (e) {
+        console.error('createConversation error', e);
+        alert('Failed to create conversation.');
+      } finally {
+        // if navigation didn't happen (error), re-enable
+        if (location.search.indexOf('messageId=') === -1) newBtn.classList.remove('disabled');
+      }
+    });
+
+    // start
+    renderLoading();
+    waitForFirebaseAndAuth();
+  </script>
+</body>
+
+</html>

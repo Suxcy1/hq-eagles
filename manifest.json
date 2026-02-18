@@ -1,0 +1,23 @@
+{
+  "name": "Eagle Hub Real Estate",
+  "short_name": "EagleHub",
+  "description": "Property listings and contact for Eagle Hub real estate",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0b5ed7",
+  "icons": [
+    {
+      "src": "images/favicon_io/android-chrome-192.png",
+      "sizes": "192x192",
+      "type": "image/jpg"
+    },
+    {
+      "src": "images/favicon_io/android-chrome-512.png",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+  ]
+}

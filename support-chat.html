@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Support — Chat</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+  <link rel="manifest" href="images/favicon_io/site.webmanifest">
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #fff;
+      --user-blue: #4da3ff;
+      /* lighter blue for user messages (changed) */
+      --agent-bg: #ffffff;
+      --muted: #6b7280;
+      --text: #071027;
+      --time-color: #374151;
+      /* more readable time/date color */
+    }
+
+    body {
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 28px auto;
+      padding: 18px
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 6px 18px rgba(12, 15, 20, .05)
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px
+    }
+
+    .header .small {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    #messages {
+      height: 66vh;
+      overflow: auto;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(10, 20, 40, .04);
+      background: linear-gradient(180deg, #fff, #fbfdff)
+    }
+
+    .msg-row {
+      display: flex;
+      margin-bottom: 10px;
+      align-items: flex-end
+    }
+
+    .bubble {
+      max-width: 75%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(12, 15, 20, .03);
+      word-break: break-word;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .bubble img {
+      max-width: 320px;
+      border-radius: 8px;
+      display: block;
+      margin-top: 8px
+    }
+
+    /* agent (left, white) */
+    .agent {
+      justify-content: flex-start
+    }
+
+    .agent .bubble {
+      background: var(--agent-bg);
+      color: var(--text);
+      border: 1px solid rgba(0, 0, 0, .04);
+      border-top-left-radius: 4px
+    }
+
+    /* user (right, lighter blue) */
+    .user {
+      justify-content: flex-end
+    }
+
+    .user .bubble {
+      background: var(--user-blue);
+      color: #fff;
+      border-top-right-radius: 4px
+    }
+
+    .meta {
+      font-size: 12px;
+      color: var(--time-color);
+      margin-top: 8px
+    }
+
+    /* time/date color adjusted */
+    /* composer: text left, send right */
+    .composer {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 12px
+    }
+
+    .composer textarea {
+      flex: 1;
+      height: 56px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, .06);
+      resize: none;
+      font-size: 14px
+    }
+
+    .send-btn {
+      background: transparent;
+      color: inherit;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .send-btn .icon {
+      width: 20px;
+      height: 20px;
+      display: block
+    }
+
+    .send-btn.disabled {
+      opacity: .6;
+      pointer-events: none
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .signin-note {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 8px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <div>
+          <strong id="title">Support Chat</strong>
+          <div class="small" id="sub">Connecting...</div>
+        </div>
+        <div class="small" id="status">Status: —</div>
+      </div>
+
+      <div id="messages" aria-live="polite" aria-relevant="additions"></div>
+
+      <div class="composer" role="region" aria-label="Message composer">
+        <textarea id="text" placeholder="Type your message..."></textarea>
+        <button id="send" class="send-btn" title="Send or attach">
+          <!-- default icon is the menu icon; script will swap depending on input -->
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="signinNote" class="signin-note" style="display:none">Sign in required to send messages.</div>
+    </div>
+  </div>
+
+  <!-- hidden file input -->
+  <input id="filePicker" type="file" accept="image/*" multiple style="display:none" />
+
+  <!-- Firebase v9.6 compat + user firebase.js (must initialize app there) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="firebase.js"></script>
+
+  <script>
+    // Updated support.html — only the DB path & UI bits you requested were changed.
+    const messagesEl = document.getElementById('messages');
+    const textEl = document.getElementById('text');
+    const sendBtn = document.getElementById('send');
+    const subEl = document.getElementById('sub');
+    const statusEl = document.getElementById('status');
+    const filePicker = document.getElementById('filePicker');
+    const signinNote = document.getElementById('signinNote');
+
+    function getParam(name) { return new URL(location.href).searchParams.get(name); }
+    function fmt(iso) { return new Date(iso).toLocaleString(); }
+    function genId() { return 'message' + (Math.floor(Math.random() * 90000) + 1000); }
+    function escapeHtml(s) { if (!s) return ''; return s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
+
+    // state
+    let currentUid = null;      // signed-in user's uid (if any)
+    let userid = null;          // scope for DB (from auth or ?userid param)
+    let messageId = getParam('messageId') || null;
+    let dbMessagesRef = null;
+    let metaRef = null;
+
+    // icons
+    const menuIcon = '<svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z"/></svg>';
+    const sendIcon = '<svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>';
+
+    // UI helpers
+    function setStatus(s) { statusEl.textContent = 'Status: ' + s; }
+    function showSignInNote(show) { signinNote.style.display = show ? 'block' : 'none'; }
+
+    // Wait for firebase libs
+    function waitForFirebase() {
+      if (window.firebase && firebase.auth && firebase.database && firebase.storage) {
+        initAuthListener();
+      } else {
+        setTimeout(waitForFirebase, 150);
+      }
+    }
+
+    // Toggle send button icon depending on text content
+    function updateSendButtonIcon() {
+      const txt = textEl.value.trim();
+      if (txt.length === 0) {
+        // show menu icon (for attach/menu)
+        sendBtn.innerHTML = menuIcon;
+        sendBtn.title = 'Attach (images, voice, ...)';
+      } else {
+        // show send icon
+        sendBtn.innerHTML = sendIcon;
+        sendBtn.title = 'Send message';
+      }
+    }
+    // run once
+    updateSendButtonIcon();
+    // bind input event
+    textEl.addEventListener('input', updateSendButtonIcon);
+
+    // Click behavior: if text present -> send text. If empty -> open file picker (attach)
+    sendBtn.addEventListener('click', async () => {
+      const text = textEl.value.trim();
+      if (text) {
+        await sendTextMessage(text);
+        textEl.value = '';
+        updateSendButtonIcon();
+        return;
+      }
+      // empty -> open file picker
+      filePicker.click();
+    });
+
+    // file selected -> upload and send each image
+    filePicker.addEventListener('change', async (ev) => {
+      const files = Array.from(ev.target.files || []);
+      if (files.length === 0) return;
+      sendBtn.disabled = true;
+      try {
+        for (const f of files) {
+          await sendImageFile(f, null);
+        }
+      } catch (err) {
+        console.error('upload error', err);
+        alert('Image upload failed');
+      } finally {
+        filePicker.value = '';
+        sendBtn.disabled = false;
+      }
+    });
+
+    // sendTextMessage (keeps uid in DB but we do NOT render uid in UI)
+    async function sendTextMessage(text) {
+      if (!userid) {
+        alert('Not ready — sign in or provide userid.');
+        return;
+      }
+      sendBtn.disabled = true;
+      try {
+        const msg = {
+          text,
+          imageUrl: null,
+          time: new Date().toISOString(),
+          status: 'sent',
+          from: (currentUid && currentUid === userid) ? 'user' : 'agent',
+          uid: currentUid || userid
+        };
+        await pushMessage(msg);
+      } catch (err) {
+        console.error('sendTextMessage error', err);
+        alert('Failed to send');
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    // Upload image and send
+    async function sendImageFile(file, caption) {
+      if (!userid) {
+        alert('Not ready — sign in or provide userid.');
+        return;
+      }
+      // filename safe
+      const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`;
+      const path = `images/${userid}/${messageId}/${filename}`;
+      const storageRef = firebase.storage().ref(path);
+      const uploadTask = storageRef.put(file);
+      await new Promise((resolve, reject) => {
+        uploadTask.on('state_changed', null, reject, resolve);
+      });
+      const url = await storageRef.getDownloadURL();
+      const msg = {
+        text: caption || '',
+        imageUrl: url,
+        time: new Date().toISOString(),
+        status: 'sent',
+        from: (currentUid && currentUid === userid) ? 'user' : 'agent',
+        uid: currentUid || userid
+      };
+      await pushMessage(msg);
+    }
+
+    // push to DB under Services/Support/${userid}/${messageId}/messages  (updated path)
+    async function pushMessage(msg) {
+      if (!dbMessagesRef) throw new Error('dbMessagesRef not ready');
+      const newRef = dbMessagesRef.push();
+      await newRef.set(msg);
+      // update meta
+      await metaRef.update({ lastMessage: msg.text || (msg.imageUrl ? '[image]' : ''), lastAt: msg.time });
+    }
+
+    // render messages (DO NOT show uid)
+    function renderMessages(messagesObj) {
+      messagesEl.innerHTML = '';
+      const keys = Object.keys(messagesObj || {});
+      keys.sort();
+      for (const k of keys) {
+        const m = messagesObj[k];
+        const row = document.createElement('div');
+        const isUser = (m.from === 'user' && m.uid === currentUid);
+        row.className = 'msg-row ' + (isUser ? 'user' : 'agent');
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        // text
+        if (m.text) bubble.innerHTML = `<div>${escapeHtml(m.text)}</div>`;
+        // image
+        if (m.imageUrl) {
+          const img = document.createElement('img');
+          img.src = m.imageUrl;
+          img.alt = 'image';
+          bubble.appendChild(img);
+        }
+        // meta line: only time/date (NO uid)
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = fmt(m.time);
+        bubble.appendChild(meta);
+
+        row.appendChild(bubble);
+        messagesEl.appendChild(row);
+      }
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    // auth handling and DB refs (uses Services/Support/${userid}/${messageId})
+    function initAuthListener() {
+      const urlUser = getParam('userid'); // customer side can pass ?userid=
+      firebase.auth().onAuthStateChanged(user => {
+        currentUid = user ? user.uid : null;
+        userid = currentUid || urlUser || null;
+
+        if (!userid) {
+          setStatus('Not signed in');
+          showSignInNote(true);
+          sendBtn.classList.add('disabled');
+          sendBtn.disabled = true;
+          return;
+        }
+
+        // ready
+        showSignInNote(false);
+        sendBtn.classList.remove('disabled');
+        sendBtn.disabled = false;
+        setStatus('Connected');
+
+        // ensure messageId exists; if not create and redirect
+        if (!messageId) {
+          const id = genId();
+          const metaReference = firebase.database().ref(`Services/Support/${userid}/${id}/meta`);
+          metaReference.set({ id, createdAt: new Date().toISOString(), lastMessage: '', status: 'open' }).then(() => {
+            const msgsRef = firebase.database().ref(`Services/Support/${userid}/${id}/messages`);
+            const key = msgsRef.push().key;
+            const first = { text: 'Conversation created', time: new Date().toISOString(), status: 'sent', from: 'user', uid: userid };
+            msgsRef.child(key).set(first).then(() => {
+              const u = new URL(location.href);
+              u.searchParams.set('messageId', id);
+              u.searchParams.set('userid', userid);
+              location.replace(u.toString());
+            });
+          });
+          return;
+        }
+
+        // set DB refs using the updated Services/Support/... path
+        dbMessagesRef = firebase.database().ref(`Services/Support/${userid}/${messageId}/messages`);
+        metaRef = firebase.database().ref(`Services/Support/${userid}/${messageId}/meta`);
+
+        // create meta if missing
+        metaRef.once('value').then(snap => {
+          if (!snap.exists()) {
+            metaRef.set({ id: messageId, createdAt: new Date().toISOString(), lastMessage: '', status: 'open' });
+          }
+        });
+
+        // realtime messages listener
+        const convoRef = firebase.database().ref(`Services/Support/${userid}/${messageId}/messages`);
+        convoRef.on('value', snap => {
+          const data = snap.val() || {};
+          renderMessages(data);
+        });
+
+        subEl.textContent = `Conversation: ${messageId}`;
+      });
+    }
+
+    // wait for firebase libraries to load
+    (function waitForFirebase() { if (window.firebase && firebase.auth && firebase.database && firebase.storage) { initAuthListener(); } else { setTimeout(waitForFirebase, 150); } })();
+  </script>
+</body>
+
+</html>

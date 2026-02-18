@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eagleshub | Modern Property Listing Platform</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+  <!-- <link rel="manifest" href="images/favicon_io/site.webmanifest"> -->
+
+
+  <!-- PWA / standalone helpers -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<!-- Theme / status bar -->
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+
+  <link rel="manifest" href="/manifest.json">
+  <!-- iOS support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '645771161540733');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=645771161540733&ev=PageView&noscript=1" /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Firebase compat SDKs (v9 compat build) - kept as compat per your request -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-storage-compat.js"></script>
+  <script src="firebase.js"></script>
+
+
+  <style>
+    :root {
+      --primary-orange: #FF6B35;
+      --primary-blue: #004E89;
+      --accent-blue: #1A659E;
+      --dark-gray: #2c3e50;
+      --light-gray: #f8f9fa;
+
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #7209b7;
+      --success: #4cc9f0;
+
+      --light: #ffffff;
+      /* fixed missing variable */
+    }
+
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-gray);
+      background: var(--light-gray);
+      margin: 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* Header / Nav */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: white;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--primary-blue);
+    }
+
+    .logo i {
+      color: var(--success);
+    }
+
+    .logo span {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all .25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-orange), #FF8C42);
+      color: white;
+      box-shadow: 0 6px 14px rgba(255, 107, 53, 0.12);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--primary-blue);
+      color: var(--primary-blue);
+      background: transparent;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+      color: white;
+      padding: 6rem 1rem 8rem;
+      text-align: center;
+      clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+    }
+
+    .hero h1 {
+      font-size: 2.25rem;
+      margin: 0 auto 1rem;
+      max-width: 900px;
+      line-height: 1.12;
+    }
+
+    .hero p {
+      opacity: 0.92;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Sections */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .features {
+      padding: 3rem 0;
+      background: white;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      padding: 1.6rem;
+      border-radius: 12px;
+      background: var(--light-gray);
+      text-align: center;
+      transition: transform .25s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+    }
+
+    /* Categories */
+    .categories {
+      padding: 3rem 0;
+      background: #f8f9fa;
+    }
+
+    .category-group {
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .category-header {
+      background: var(--primary-blue);
+      color: white;
+      padding: 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-content {
+      background: white;
+      padding: 1rem;
+      display: none;
+    }
+
+    .subcategory-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.6rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .subcategory-list li {
+      padding: 0.6rem;
+      background: #FFF5F2;
+      border-radius: 6px;
+    }
+
+    /* Testimonials */
+    .testimonial-scroller {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    .testimonial {
+      flex: 0 0 80%;
+      background: white;
+      padding: 1.4rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Properties */
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .property-card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .property-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .property-card .meta {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+      color: white;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary-blue);
+      color: white;
+      padding: 2.5rem 1rem;
+    }
+
+    footer a {
+      color: white;
+    }
+
+    /* Auth Modal */
+    .auth-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+
+    .auth-content {
+      background: white;
+      width: 90%;
+      max-width: 520px;
+      margin: 3rem auto;
+      padding: 1.6rem;
+      border-radius: 14px;
+      position: relative;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 0.8rem;
+      text-align: center;
+      border-radius: 8px;
+      background: #f5f5f5;
+      cursor: pointer;
+    }
+
+    .auth-tab.active {
+      background: var(--primary-blue);
+      color: white;
+      box-shadow: 0 6px 18px rgba(0, 78, 137, 0.08);
+    }
+
+    .google-auth {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #4285F4;
+      color: white;
+      margin: 0.6rem 0;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.9rem;
+      margin-bottom: 1rem;
+      border: 2px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(0, 78, 137, 0.06);
+      border-color: var(--primary-blue);
+    }
+
+    /* loading indicator on buttons */
+    .loading {
+      position: relative;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      transform: translateY(-50%);
+      border: 3px solid rgba(255, 255, 255, 0.9);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: translateY(-50%) rotate(360deg);
+      }
+    }
+
+    /* small screens tweaks */
+    @media (max-width:640px) {
+      .hero {
+        padding: 3.5rem 1rem 5rem;
+      }
+
+      .testimonial {
+        flex: 0 0 95%;
+      }
+    }
+
+
+    .install-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .install-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 16px 16px 0 0;
+      padding: 20px;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+      animation: slideUp 0.3s ease;
+    }
+
+    .install-text p {
+      margin: 6px 0 14px;
+      color: #555;
+    }
+
+    .install-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .install-actions button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #installBtn {
+      background: #0b5ed7;
+      color: #fff;
+    }
+
+    #closeInstall {
+      background: #eee;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    /* inlined or a tiny CSS file loaded very early */
+    #splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      /* match manifest background_color */
+      z-index: 9999;
+    }
+
+    #splash-logo {
+      width: 60vw;
+      max-width: 520px;
+      height: auto;
+    }
+
+    /* hide quickly when app is ready */
+    body.splash-done #splash {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="nav container">
+      <div class="logo" aria-label="Eagleshub home">
+        <i class="fas fa-crown" aria-hidden="true"></i>
+        <span>Engles</span>Hub
+      </div>
+      <div class="cta-buttons">
+        <button type="button" class="btn btn-outline" onclick="showAuthModal('login')"><i class="fas fa-sign-in-alt"
+            aria-hidden="true"></i> Login</button>
+        <button type="button" class="btn btn-primary" onclick="showAuthModal('register')"><i class="fas fa-plus"
+            aria-hidden="true"></i> Register</button>
+      </div>
+    </nav>
+  </header>
+
+  <div id="installPopup" class="install-popup hidden">
+    <div class="install-card">
+      <div class="install-text">
+        <strong>Install Eagle Hub</strong>
+        <p>Get faster access and offline support.</p>
+      </div>
+      <div class="install-actions">
+        <button id="installBtn">Install</button>
+        <button id="closeInstall">Not now</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="iosPopup" class="install-popup hidden">
+    <div class="install-card">
+      <strong>Install Eagle Hub</strong>
+      <p>
+        Tap the <strong>Share</strong> button in Safari<br>
+        then choose <strong>Add to Home Screen</strong>
+      </p>
+      <button id="closeIOS">Got it</button>
+    </div>
+  </div>
+
+
+
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Direct Property Listings — Zero Commission Platform</h1>
+      <p class="lead">Connect directly with qualified renters and keep 100% of your profits.</p>
+      <button type="button" class="btn btn-primary" onclick="showAuthModal('register')">Start Free Listing <i
+          class="fas fa-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </section>
+
+  <!-- put this just inside <body> -->
+  <div id="splash">
+    <img src="images/favicon_io/fillImage.jpg" alt="Logo" id="splash-logo">
+  </div>
+
+
+  <!-- Features -->
+  <section class="features">
+    <div class="container features-grid">
+      <div class="feature-card">
+        <i class="fas fa-comments fa-2x" style="color:var(--primary-orange);" aria-hidden="true"></i>
+        <h3>Direct Communication</h3>
+        <p>Built-in video/voice chat and messaging system with potential renters.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-chart-line fa-2x" style="color:var(--primary-blue);" aria-hidden="true"></i>
+        <h3>Smart Analytics</h3>
+        <p>Real-time performance tracking and search keyword analysis.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-ad fa-2x" style="color:var(--primary-orange);" aria-hidden="true"></i>
+        <h3>Automated Advertising</h3>
+        <p>Automatic Facebook & Google Ads management for your listings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="categories">
+    <div class="container category-accordion">
+      <h2 style="text-align:center; margin-bottom:1rem; color:var(--primary-blue);">Our Property Categories</h2>
+
+      <!-- Residential -->
+      <div class="category-group">
+        <div class="category-header" role="button" tabindex="0">
+          <h3 style="margin:0;">Residential Properties</h3>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </div>
+        <div class="category-content">
+          <div class="subcategory">
+            <h4>Houses</h4>
+            <ul class="subcategory-list">
+              <li>Bungalow</li>
+              <li>Duplex</li>
+              <li>Terrace</li>
+              <li>Detached</li>
+              <li>Semi-detached</li>
+              <li>Townhouse</li>
+              <li>Maisonette</li>
+            </ul>
+          </div>
+
+          <div class="subcategory">
+            <h4>Apartments</h4>
+            <ul class="subcategory-list">
+              <li>Studio</li>
+              <li>1-Bedroom</li>
+              <li>2-Bedroom</li>
+              <li>3-Bedroom</li>
+              <li>4-Bedroom</li>
+              <li>Penthouse</li>
+              <li>Serviced Apartment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Commercial -->
+      <div class="category-group">
+        <div class="category-header" role="button" tabindex="0">
+          <h3 style="margin:0;">Commercial Properties</h3>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </div>
+        <div class="category-content">
+          <div class="subcategory">
+            <h4>Office</h4>
+            <ul class="subcategory-list">
+              <li>Corporate Office</li>
+              <li>Co-working Space</li>
+              <li>Shop Office</li>
+              <li>Medical Complex</li>
+              <li>Banking Hall</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Land -->
+      <div class="category-group">
+        <div class="category-header" role="button" tabindex="0">
+          <h3 style="margin:0;">Land Properties</h3>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </div>
+        <div class="category-content">
+          <div class="subcategory">
+            <h4>Residential Land</h4>
+            <ul class="subcategory-list">
+              <li>Plot</li>
+              <li>Acreage</li>
+              <li>Waterfront</li>
+              <li>Residential Layout</li>
+              <li>Family Compound</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Special Purpose -->
+      <div class="category-group">
+        <div class="category-header" role="button" tabindex="0">
+          <h3 style="margin:0;">Special Purpose Properties</h3>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </div>
+        <div class="category-content">
+          <div class="subcategory">
+            <h4>Religious</h4>
+            <ul class="subcategory-list">
+              <li>Church</li>
+              <li>Mosque</li>
+              <li>Shrine</li>
+              <li>Cathedral</li>
+              <li>Prayer Camp</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section style="padding:2.5rem 0; background:#fff7f3;">
+    <div class="container">
+      <h2 style="text-align:center; color:var(--primary-blue);">What Nigerian Property Owners Say</h2>
+      <div class="testimonial-scroller" aria-live="polite">
+
+        <div class="testimonial">
+          <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1rem;">
+            <img src="https://randomuser.me/api/portraits/med/men/1.jpg?nat=ng" alt="Emeka Okoro"
+              style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--primary-orange);">
+            <div>
+              <strong style="color:var(--primary-blue);">Emeka Okoro</strong>
+              <div style="font-size:0.9rem;color:#666;">Lagos Property Owner</div>
+            </div>
+          </div>
+          <p>"I listed my 3-bedroom flat in Lekki Phase 1 and connected directly with serious tenants within days. The
+            built-in ads feature helped me reach more people than any agent ever did."</p>
+        </div>
+
+        <div class="testimonial">
+          <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1rem;">
+            <img src="https://randomuser.me/api/portraits/med/women/5.jpg?nat=ng" alt="Amina Yusuf"
+              style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--primary-orange);">
+            <div>
+              <strong style="color:var(--primary-blue);">Amina Yusuf</strong>
+              <div style="font-size:0.9rem;color:#666;">Abuja Business Owner</div>
+            </div>
+          </div>
+          <p>"The verification process gave me confidence in dealing with tenants directly. I particularly love the
+            analytics — I can now see exactly what people are searching for in Wuse 2."</p>
+        </div>
+
+        <div class="testimonial">
+          <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1rem;">
+            <img src="https://randomuser.me/api/portraits/med/men/8.jpg?nat=ng" alt="Chukwudi Eze"
+              style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--primary-orange);">
+            <div>
+              <strong style="color:var(--primary-blue);">Chukwudi Eze</strong>
+              <div style="font-size:0.9rem;color:#666;">Port Harcourt Landlord</div>
+            </div>
+          </div>
+          <p>"Finally, a solution that respects property owners! The video call feature saved me multiple trips between
+            cities."</p>
+        </div>
+
+      </div>
+
+      <div style="text-align:center; margin-top:1.25rem;">
+        <button type="button" class="btn btn-primary" onclick="showAuthModal('register')">Join Successful Owners Today
+          →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Properties -->
+  <section style="padding:2.5rem 0; background:white;">
+    <div class="container">
+      <h2 style="text-align:center; color:var(--primary-blue);">Recently Listed Properties</h2>
+      <div style="margin-top:1rem" class="properties-grid">
+
+        <div class="property-card">
+          <img src="https://source.unsplash.com/800x600/?house,lagos" alt="Lekki Modern Duplex">
+          <div class="meta">
+            <h3 style="margin:0">Lekki Modern Duplex</h3>
+            <div style="font-size:0.95rem">5 Bedrooms | ₦25M/year</div>
+          </div>
+        </div>
+
+        <div class="property-card">
+          <img src="https://source.unsplash.com/800x600/?apartment,abuja" alt="Maitama Luxury Apartment">
+          <div class="meta">
+            <h3 style="margin:0">Maitama Luxury Apartment</h3>
+            <div style="font-size:0.95rem">3 Bedrooms | ₦15M/year</div>
+          </div>
+        </div>
+
+        <div class="property-card">
+          <img src="https://source.unsplash.com/800x600/?office,lagos" alt="Victoria Island Office Space">
+          <div class="meta">
+            <h3 style="margin:0">Victoria Island Office Space</h3>
+            <div style="font-size:0.95rem">2000 sqft | ₦8M/year</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container"
+      style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1rem; align-items:start;">
+      <div>
+        <h3 style="color:var(--primary-orange); margin-bottom:0.5rem;">PropDirect</h3>
+        <p style="margin:0; font-size:0.95rem;">Connecting Nigerian property owners directly with qualified tenants. No
+          agents, no hidden fees.</p>
+      </div>
+
+      <div>
+        <h4 style="margin-bottom:0.5rem">Legal</h4>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="margin-bottom:0.5rem;"><a href="termsandcondition.html" rel="noopener">Terms of Service</a></li>
+          <li style="margin-bottom:0.5rem;"><a href="termsandcondition.html" rel="noopener">Privacy Policy</a></li>
+          <li><a href="listing-polcies.html" rel="noopener">Listing Policy</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="margin-bottom:0.5rem">Contact</h4>
+        <p style="margin:0 0 0.5rem;"><i class="fas fa-envelope" aria-hidden="true"></i> <a
+            href="eagleshub907o@gmail.com" style="color:white;">hello@eagleshub</a></p>
+        <p style="margin:0;"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Lagos | Abuja | Port Harcourt</p>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:1.25rem; border-top:1px solid rgba(255,255,255,0.08); padding-top:1rem;">
+      <small>© 2024 Eagleshub. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="auth-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="auth-content">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchAuthTab('register')" role="tab">Register</div>
+        <div class="auth-tab" onclick="switchAuthTab('login')" role="tab">Login</div>
+      </div>
+
+      <div class="google-auth" onclick="signInWithGoogle()" role="button" aria-label="Continue with Google">
+        <i class="fab fa-google" aria-hidden="true"></i> Continue with Google
+      </div>
+
+      <div style="text-align:center; margin:0.6rem 0; color:#888;">or</div>
+
+      <div id="registerForm" class="auth-form">
+        <label class="sr-only" for="regEmail">Email address</label>
+        <input aria-label="Email address" id="regEmail" class="form-input" type="email" placeholder="Email address">
+        <label class="sr-only" for="regPassword">Password</label>
+        <input aria-label="Password" id="regPassword" class="form-input" type="password" placeholder="Create password">
+        <button type="button" class="btn btn-primary" onclick="emailRegister()">Create Account</button>
+      </div>
+
+      <div id="loginForm" class="auth-form" style="display:none;">
+        <input aria-label="Email address" id="loginEmail" class="form-input" type="email" placeholder="Email address">
+        <input aria-label="Password" id="loginPassword" class="form-input" type="password" placeholder="Password">
+        <button type="button" class="btn btn-primary" onclick="emailLogin()">Login</button>
+      </div>
+
+      <div style="text-align:center; margin-top:0.75rem;">
+        <button type="button" class="forgot-password" onclick="showPasswordReset()"
+          style="background:none;border:0;color:var(--primary-blue);cursor:pointer;font-weight:600;">Forgot
+          Password?</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Application JS (auth, UI, accordion) -->
+  <script>
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    //firebase deploy --only hosting:hq-eagleshub
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((reg) => {
+            console.log("Service Worker registered", reg);
+          })
+          .catch((err) => {
+            console.log("Service Worker registration failed", err);
+          });
+      });
+    }
+
+    // ---- Replace previous install logic with this ----
+    // Put this near the top of your main JS (or in head) so the beforeinstallprompt listener is attached early.
+    let deferredPrompt = null;
+
+    function isIOS() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent);
+    }
+
+    function isInStandaloneMode() {
+      // checks for iOS standalone or display-mode standalone
+      return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+    }
+
+    function showInstallPopup() {
+      const el = document.getElementById("installPopup");
+      if (el) el.classList.remove("hidden");
+    }
+
+    // Listen for the browser install event (Android / Chromium)
+    window.addEventListener("beforeinstallprompt", (e) => {
+      console.log("beforeinstallprompt fired");
+      e.preventDefault();
+      deferredPrompt = e;
+      // show popup every visit (unless already installed)
+      if (!isInStandaloneMode()) showInstallPopup();
+    });
+
+    // DOM ready wiring
+    document.addEventListener("DOMContentLoaded", () => {
+      localStorage.removeItem("installDismissed");
+      localStorage.removeItem("iosInstallDismissed");
+      window.addEventListener('load', () => {
+        // small delay so it transitions smoothly (optional)
+        setTimeout(() => document.body.classList.add('splash-done'), 2500);
+      });
+
+      const installBtn = document.getElementById("installBtn");
+      const closeBtn = document.getElementById("closeInstall");
+
+      // If user is already in standalone (app installed), hide any popup
+      if (isInStandaloneMode()) {
+        const p = document.getElementById("installPopup");
+        if (p) p.classList.add("hidden");
+        const ios = document.getElementById("iosPopup");
+        if (ios) ios.classList.add("hidden");
+        return;
+      }
+
+      // Show Android popup every visit (even if beforeinstallprompt hasn't fired yet)
+      if (!isIOS()) {
+        // show the popup immediately so user is asked each visit
+        // browser might still have deferredPrompt set and we'll use it when they click Install
+        showInstallPopup();
+      }
+
+      // Install button behavior (works for both cases)
+      if (installBtn) {
+        installBtn.addEventListener("click", async () => {
+          // If we have the native prompt saved, show it
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const choice = await deferredPrompt.userChoice;
+            console.log("userChoice", choice);
+            // clear saved prompt so we don't reuse it
+            deferredPrompt = null;
+          } else {
+            // Fallback: instruct the user to use Chrome menu -> Add to Home screen
+            alert('If the native install prompt did not appear, please open Chrome menu (⋮) and choose "Add to Home screen".');
+          }
+          // hide popup after action
+          const p = document.getElementById("installPopup");
+          if (p) p.classList.add("hidden");
+        });
+      }
+
+      // Close / "Not now" button — just hides the popup (but we DO NOT persist choice)
+      if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+          const p = document.getElementById("installPopup");
+          if (p) p.classList.add("hidden");
+        });
+      }
+
+      // iOS: show instruction popup every visit if not installed
+      if (isIOS()) {
+        const iosPopup = document.getElementById("iosPopup");
+        if (iosPopup) iosPopup.classList.remove("hidden");
+        const closeIOS = document.getElementById("closeIOS");
+        if (closeIOS) {
+          closeIOS.addEventListener("click", () => {
+            iosPopup.classList.add("hidden");
+          });
+        }
+      }
+    });
+
+    // Optional: hide popups when app gets installed
+    window.addEventListener("appinstalled", () => {
+      console.log("PWA installed (appinstalled)");
+      const p = document.getElementById("installPopup");
+      if (p) p.classList.add("hidden");
+      const ios = document.getElementById("iosPopup");
+      if (ios) ios.classList.add("hidden");
+    });
+
+
+
+
+    // ---------- UI helpers ----------
+    function setButtonLoading(btn, isLoading) {
+      if (!btn) return;
+      if (isLoading) { btn.classList.add('loading'); btn.disabled = true; }
+      else { btn.classList.remove('loading'); btn.disabled = false; }
+    }
+    let ClientIp;
+    let UserAgent;
+
+
+
+    function generateUUID() {
+      // Creates unique event_id for each action
+      return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
+    }
+
+    // Send event to both Facebook Pixel (browser) and your server (CAPI)
+    async function trackEvent(eventName, userData = {}) {
+      const eventId = generateUUID();
+      const endpoint = 'https://engleshub.onrender.com/api/fb-events'; // <== change to your backend endpoint
+      // const endpoint = 'http://localhost:4000/api/fb-events'; // <== change to your backend endpoint
+
+      // 1️⃣ Fire browser event
+      // fbq('track', eventName, {
+      //     event_id: eventId, http://localhost:4000/api/fb-events
+
+      //     ...userData
+      // });
+
+      // 2️⃣ Send same event_id + user info to server
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event_name: eventName,
+            event_id: eventId,
+            user_data: userData,
+            client_user_agent: UserAgent,
+            client_ip_address: ClientIp, // leave empty; server will extract IP
+            event_time: Math.floor(Date.now() / 1000),
+          })
+        });
+
+        if (!response.ok) throw new Error('Server failed');
+        console.log(`[Facebook CAPI] Sent ${eventName} event successfully ✅`);
+      } catch (err) {
+        console.error('Error sending event to server:', err);
+      }
+    }
+
+
+    const welcome = `
+<section class="engles-notif" role="article" aria-label="Welcome to EnglesHub">
+  <div class="header">
+    <div class="logo-badge" aria-hidden="true">EH</div>
+    <div>
+      <h2>Dear Valued EnglesHub User, <span class="progress-badge">Welcome</span></h2>
+      <p class="lead">Warm welcome — you are now registered on EnglesHub</p>
+    </div>
+  </div>
+
+  <div class="body">
+    <p>
+      Thank you for joining EnglesHub. We’re excited to help you reach thousands of buyers. 
+      To get started quickly, complete your public profile so you can begin listing properties and enjoy promotional services such as 
+      <strong>Facebook advertising</strong> and <strong>Google advertising</strong> to boost listings to more customers.
+    </p>
+
+    <p><strong>What you can do now:</strong></p>
+    <ul>
+      <li>Complete your profile to activate listing tools and promotional features.</li>
+      <li>Upload property photos and details after verification is complete.</li>
+      <li>Access advertising packages to promote your listings to the right audience.</li>
+    </ul>
+
+    <a class="btn btn-primary" href="complete-profile.html" role="button" aria-label="Complete your profile">Complete Profile</a>
+
+    <p class="small">Completing your profile makes the verification process faster and helps buyers trust your listings. Our support team is available if you need help.</p>
+  </div>
+</section>`
+
+    function showError(msg) {
+      let el = document.getElementById('authError');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'authError';
+        el.style.marginTop = '0.75rem';
+        el.style.color = 'crimson';
+        el.style.fontWeight = '600';
+        document.querySelector('.auth-content').appendChild(el);
+      }
+      el.textContent = msg;
+    }
+
+    function clearError() {
+      const el = document.getElementById('authError');
+      if (el) el.textContent = '';
+    }
+
+    function validateEmailPass(email, password) {
+      if (!email || !password) return 'Please enter email and password.';
+      if (password.length < 6) return 'Password must be at least 6 characters.';
+      // basic email format check
+      const re = /^\S+@\S+\.\S+$/;
+      if (!re.test(email)) return 'Please enter a valid email address.';
+      return null;
+    }
+
+    async function getClientIp() {
+      try {
+        const response = await fetch("https://api.ipify.org?format=json");
+        const data = await response.json();
+        console.log(data.ip);
+
+        ClientIp = data.ip;
+        return data.ip; // real public IP
+      } catch (e) {
+        console.error("Unable to get IP:", e);
+        return null;
+      }
+    }
+
+    function getUserAgent() {
+      return navigator.userAgent;
+    }
+
+
+    function getFbp() {
+      return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('_fbp='))?.split('=')[1];
+    }
+
+    function getFbc() {
+      return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('_fbc='))?.split('=')[1];
+    }
+
+
+    // --- READ AND REFRESH _fbc COOKIE FOR 90 DAYS ---
+    (function captureFbcCookie() {
+
+      // Read _fbc cookie
+      function getFbc() {
+        return document.cookie
+          .split('; ')
+          .find(row => row.startsWith('_fbc='))?.split('=')[1] || null;
+      }
+
+      // Write cookie
+      function setCookie(name, value, days = 90) {
+        const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
+        document.cookie = `${name}=${value}; path=/; expires=${expires}; SameSite=Lax`;
+      }
+
+      // Get the existing fbc
+      const fbcValue = getFbc();
+
+      // If _fbc exists, refresh it for 90 days
+      if (fbcValue) {
+
+        try {
+          setCookie('eagleshub_fbc', fbcValue, 90);
+          localStorage.setItem('eagleshub_fbc', fbcValue);
+          console.log(fbcValue);
+
+        } catch (e) {
+        }
+
+      }
+
+    })();
+
+
+
+
+    function getSavedFbc() {
+
+      // --- helpers ---
+      function getCookie(name) {
+        return document.cookie
+          .split("; ")
+          .find(row => row.startsWith(name + "="))
+          ?.split("=")[1] || null;
+      }
+
+      function setCookie(name, value, days = 90) {
+        const expires = new Date(Date.now() + days * 86400 * 1000).toUTCString();
+        document.cookie = `${name}=${value}; path=/; expires=${expires}; SameSite=Lax`;
+      }
+
+      // --- 1. Try get from cookie ---
+      let fbc = getCookie("eagleshub_fbc");
+
+      // --- 2. If cookie missing, try from localStorage ---
+      if (!fbc) {
+        try {
+          fbc = localStorage.getItem("eagleshub_fbc");
+        } catch (e) {
+          // ignore storage errors
+        }
+
+        // --- 3. If found in localStorage, auto-repair cookie ---
+        if (fbc) {
+          setCookie("eagleshub_fbc", fbc, 90); // restore cookie for 90 days
+        }
+      }
+
+      // --- 4. If still missing, return fallback ---
+      return fbc || "not_found";
+    }
+
+
+
+
+
+    // ---------- Auth functions ----------
+    async function emailRegister() {
+      clearError();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const btn = document.querySelector('#registerForm button');
+
+      const err = validateEmailPass(email, password);
+      if (err) { showError(err); return; }
+
+      setButtonLoading(btn, true);
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        await userCredential.user.sendEmailVerification();
+
+        const user = userCredential.user;              // fixed 'const'
+        const userId = user.uid;
+        const notifRef = database.ref(`Users/${userId}/notifications`).push();
+        await notifRef.set({
+          content: welcome,
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+          status: 'new'
+        });
+
+        await getClientIp();
+        UserAgent = getUserAgent();
+        console.log(UserAgent);
+        console.log(ClientIp);
+
+        const FB_FBP = getFbp();
+        // const FB_FBC = getFbc();
+        const FB_FBC = getSavedFbc()
+        console.log(FB_FBP);
+        console.log(FB_FBC);
+
+
+        await trackEvent("CompleteRegistration", {
+          email: email,
+          action_type: 'subscribe',
+          clientIpAddress: ClientIp,
+          clientUserAgent: UserAgent,
+          fbp: FB_FBP,
+          fbc: FB_FBC
+        });
+        //  await auth.signOut();
+        window.location.href = 'emailVerification.html';
+      } catch (error) {
+        showError(error.message);
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    async function emailLogin() {
+      clearError();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.querySelector('#loginForm button');
+
+      const err = validateEmailPass(email, password);
+      if (err) { showError(err); return; }
+
+      setButtonLoading(btn, true);
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        if (!userCredential.user.emailVerified) {
+          window.location.href = 'emailVerification.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      } catch (error) {
+        showError(error.message);
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    async function signInWithGoogle() {
+      clearError();
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        //const result = await auth.signInWithPopup(provider);
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;          // FirebaseUser object
+        const userId = user.uid;           // this is the UID
+        const notifRef = db.ref(`Users/${userId}/notifications`).push();
+        await notifRef.set({
+          content: welcome,
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+          status: 'new'
+        });
+
+        await getClientIp();
+        UserAgent = getUserAgent();
+        console.log(UserAgent);
+        console.log(ClientIp);
+
+        const FB_FBP = getFbp();
+        // const FB_FBC = getFbc();
+        const FB_FBC = getSavedFbc()
+        console.log(FB_FBP);
+        console.log(FB_FBC);
+
+
+        await trackEvent("CompleteRegistration", {
+          email: email,
+          action_type: 'subscribe',
+          clientIpAddress: ClientIp,
+          clientUserAgent: UserAgent,
+          fbp: FB_FBP,
+          fbc: FB_FBC
+        });
+
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        showError(error.message);
+      }
+    }
+
+    function showPasswordReset() {
+      const email = prompt('Please enter your email address:');
+      if (!email) return;
+      auth.sendPasswordResetEmail(email)
+        .then(() => alert('Password reset email sent! Check your inbox.'))
+        .catch(error => showError(error.message));
+    }
+
+    // ---------- Modal & tabs ----------
+    function showAuthModal(formType) {
+      const modal = document.getElementById('authModal');
+      modal.style.display = 'block';
+      modal.setAttribute('aria-hidden', 'false');
+      switchAuthTab(formType || 'register');
+    }
+    function hideAuthModal() {
+      const modal = document.getElementById('authModal');
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function switchAuthTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.style.display = 'none');
+      const form = document.getElementById(tab + 'Form');
+      if (form) form.style.display = 'block';
+      const target = Array.from(document.querySelectorAll('.auth-tab'))
+        .find(el => el.textContent.trim().toLowerCase() === tab.toLowerCase());
+      if (target) target.classList.add('active');
+    }
+
+    window.addEventListener('click', (event) => {
+      if (event.target === document.getElementById('authModal')) hideAuthModal();
+    });
+
+    // Close on Escape
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideAuthModal(); });
+
+    // ---------- Auth state handler (avoid redirect loops) ----------
+    auth.onAuthStateChanged(user => {
+      if (!user) return;
+      const path = window.location.pathname.split('/').pop();
+      const publicPages = ['', 'index.html', 'verification.html'];
+      if (publicPages.includes(path)) {
+        if (user.emailVerified) window.location.href = 'dashboard.html';
+        return;
+      }
+      if (!user.emailVerified) window.location.href = 'verification.html';
+    });
+
+    // ---------- Accordion functionality (better handling) ----------
+    document.querySelectorAll('.category-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('i');
+        const currentDisplay = window.getComputedStyle(content).display;
+        const isHidden = currentDisplay === 'none' || currentDisplay === '';
+
+        // Hide others
+        document.querySelectorAll('.category-group').forEach(group => {
+          const cc = group.querySelector('.category-content');
+          const ic = group.querySelector('.category-header i');
+          if (cc && cc !== content) {
+            cc.style.display = 'none';
+            if (ic) ic.classList.remove('fa-rotate-180');
+          }
+        });
+
+        // Toggle current
+        content.style.display = isHidden ? 'block' : 'none';
+        if (icon) icon.classList.toggle('fa-rotate-180', isHidden);
+      });
+
+      // keyboard accessibility
+      header.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') header.click(); });
+    });
+
+    // Prevent accidental form submit on Enter inside modal (optional)
+    document.getElementById('authModal').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const visible = Array.from(document.querySelectorAll('.auth-form')).find(f => f.style.display !== 'none');
+        if (visible) e.preventDefault();
+      }
+    });
+
+  </script>
+</body>
+
+</html>

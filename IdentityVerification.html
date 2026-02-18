@@ -1,0 +1,1053 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Identity Verification — ElitePro</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+  <link rel="manifest" href="images/favicon_io/site.webmanifest">
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '645771161540733');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=645771161540733&ev=PageView&noscript=1" /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --card: #ffffff;
+      --primary: #004E89;
+      --accent: #FF6B35;
+      --muted: #6b7280;
+      --success: #16a34a;
+      --danger: #e04848;
+      --radius: 12px;
+      --shadow: 0 10px 30px rgba(12, 18, 30, 0.06);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, system-ui, Roboto, Arial;
+      background: var(--bg);
+      color: #0b1220;
+      padding: 28px
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 18px;
+      align-items: start
+    }
+
+    /* Left card (form) */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px
+    }
+
+    .header h1 {
+      font-size: 18px;
+      color: var(--primary);
+      margin: 0
+    }
+
+    .header p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 13px
+    }
+
+    /* status box */
+    .status-box {
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px
+    }
+
+    .status-unverified {
+      background: #fff8e8;
+      border: 1px solid #ffe6b3;
+      color: #6a4b00
+    }
+
+    .status-processing {
+      background: #e8f2ff;
+      border: 1px solid #cfe4ff;
+      color: #053464
+    }
+
+    .status-verified {
+      background: #e8faf0;
+      border: 1px solid #cdeedc;
+      color: #0b6a3e
+    }
+
+    /* upload area */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 15px;
+      color: var(--primary)
+    }
+
+    .instructions {
+      background: #fbfdff;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .upload-block {
+      border: 2px dashed #e6edf6;
+      border-radius: 10px;
+      padding: 12px;
+      transition: border-color .18s
+    }
+
+    .upload-block.dragover {
+      border-color: var(--primary)
+    }
+
+    .upload-choose {
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .upload-btn {
+      background: var(--primary);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .file-input {
+      display: none
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px
+    }
+
+    .preview-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #eef4fb;
+      background: #fff
+    }
+
+    .preview-item img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      display: block
+    }
+
+    .preview-meta {
+      padding: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .remove-btn {
+      background: transparent;
+      border: 0;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 14px
+    }
+
+    .progress {
+      height: 6px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 6px
+    }
+
+    .progress>i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width .15s linear
+    }
+
+    /* right column: summary */
+    .aside-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .aside-card h3 {
+      margin: 0;
+      color: var(--primary)
+    }
+
+    .kv {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 14px
+    }
+
+    /* buttons */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 8px
+    }
+
+    .btn {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent), #FF8C42);
+      color: #fff
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(0, 78, 137, 0.06);
+      color: var(--primary)
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      background: #06121a;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: none;
+      z-index: 1100
+    }
+
+    /* loading overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 9, 14, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1200
+    }
+
+    .loader {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 6px solid rgba(255, 255, 255, 0.12);
+      border-top-color: var(--accent);
+      animation: spin 1s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* responsive */
+    @media (max-width:980px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 10px
+      }
+
+      .preview-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    /* Camera overlay */
+    .camera-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    .camera-wrap {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .camera-overlay video {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      background: #000;
+      max-height: 72vh;
+      object-fit: cover;
+    }
+
+    .camera-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .camera-actions button {
+      padding: 10px 14px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- Camera Overlay -->
+    <div id="cameraOverlay" class="camera-overlay" hidden>
+      <div class="camera-wrap">
+        <video id="cameraVideo" autoplay playsinline></video>
+        <div class="camera-actions">
+          <button id="switchCamera" type="button" title="Switch camera">Flip</button>
+          <button id="captureBtn" type="button" title="Capture photo">Capture</button>
+          <button id="cancelCamera" type="button" title="Cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- LEFT: form -->
+    <div class="card" aria-labelledby="verify-title">
+      <div class="header">
+        <div>
+          <h1 id="verify-title">Identity Verification Portal</h1>
+          <p>Upload required documents so we can verify your account — we keep your data secure.</p>
+        </div>
+        <div id="smallStatus" style="font-size:13px;color:var(--muted)"></div>
+      </div>
+
+      <div id="statusBox" class="status-box status-unverified" role="status" aria-live="polite">
+        <strong id="statusHeading">Verification required</strong>
+        <div id="statusText" style="margin-top:6px;color:var(--muted);font-size:13px">Please submit the documents below.
+        </div>
+      </div>
+
+      <!-- NIN / gov ID -->
+      <section>
+        <div class="section-title">
+          <h2>Government ID</h2>
+        </div>
+        <div class="instructions">Upload a clear government-issued ID (NIN, driver's license or national ID). JPG/PNG.
+          Max 6MB.</div>
+
+        <div id="ninBlock" class="upload-block" data-type="nin">
+          <div class="upload-choose">
+            <label class="upload-btn" for="ninFile"><i class="fa fa-upload"></i>&nbsp; Choose file</label>
+            <div style="color:var(--muted);font-size:13px">or drag & drop image here</div>
+          </div>
+          <input id="ninFile" type="file" accept="image/png,image/jpeg" class="file-input"
+            aria-label="Upload government id">
+          <div class="preview-grid" id="ninPreview"></div>
+        </div>
+      </section>
+
+      <!-- Bank / address proof -->
+      <section style="margin-top:14px">
+        <div class="section-title">
+          <h2>Address proof</h2>
+        </div>
+        <div class="instructions">Upload a bank statement, utility bill, or tenancy document (recent 3 months). JPG/PNG.
+          Max 6MB.</div>
+
+        <div id="bankBlock" class="upload-block" data-type="bank">
+          <div class="upload-choose">
+            <label class="upload-btn" for="bankFile"><i class="fa fa-upload"></i>&nbsp; Choose file</label>
+            <div style="color:var(--muted);font-size:13px">or drag & drop image here</div>
+          </div>
+          <input id="bankFile" type="file" accept="image/png,image/jpeg" class="file-input"
+            aria-label="Upload bank statement">
+          <div class="preview-grid" id="bankPreview"></div>
+        </div>
+      </section>
+
+      <!-- Face -->
+      <section style="margin-top:14px">
+        <div class="section-title">
+          <h2>Face photo</h2>
+        </div>
+        <div class="instructions">Upload a front-facing portrait (no hats/sunglasses). 500×500px minimum suggested.
+          JPG/PNG. Max 6MB.</div>
+
+        <div id="faceBlock" class="upload-block" data-type="face">
+          <div class="upload-choose">
+            <label class="upload-btn" for="faceFile"><i class="fa fa-upload"></i>&nbsp; Choose file</label>
+            <div style="color:var(--muted);font-size:13px">or take a picture and upload</div>
+          </div>
+          <input id="faceFile" type="file" accept="image/png,image/jpeg" class="file-input"
+            aria-label="Upload face image">
+          <div class="preview-grid" id="facePreview"></div>
+        </div>
+      </section>
+
+      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+        <div style="color:var(--muted);font-size:13px">All uploads are encrypted & only used for verification.</div>
+        <div class="btn-row">
+          <button id="submitBtn" class="btn btn-primary" title="Submit verification">Submit verification</button>
+          <button id="clearBtn" class="btn btn-ghost" title="Clear files">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: summary -->
+    <aside class="aside-card">
+      <div>
+        <h3>Verification summary</h3>
+        <div class="kv">
+          <div>Government ID</div>
+          <div id="kv-nin">—</div>
+        </div>
+        <div class="kv">
+          <div>Address proof</div>
+          <div id="kv-bank">—</div>
+        </div>
+        <div class="kv">
+          <div>Face image</div>
+          <div id="kv-face">—</div>
+        </div>
+      </div>
+
+      <div>
+        <h3>Status</h3>
+        <div id="liveStatus" style="color:var(--muted);font-size:13px">Not submitted</div>
+      </div>
+
+      <div>
+        <h3>Help</h3>
+        <div style="color:var(--muted);font-size:13px">
+          If your verification is delayed after submission, contact support at <a
+            href="mailto:hello@propdirect.ng">hello@propdirect.ng</a>.
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- overlay + toast -->
+  <div id="overlay" class="overlay" role="status" aria-hidden="true">
+    <div class="loader" aria-hidden="true"></div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- firebase compat (we expect firebase.js to initialize) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-storage-compat.js"></script>
+  <script src="firebase.js"></script>
+
+  <script>
+    /*
+     Improved verification page logic
+     - Files saved to storage path: "Verification/<USER_ID>/<type>/<timestamp>_<filename>"
+     - DB metadata saved to: "Verifications/<USER_ID>"
+     - Polls user's meta.verified and updates UI in real-time
+     - Per-file progress and validation
+    */
+
+    (function () {
+      const MAX_FILE_MB = 6;
+      const ACCEPTED_TYPES = ['image/jpeg', 'image/png'];
+      const storageBase = 'Verification'; // per your request
+
+      // DOM refs
+      const ninFile = document.getElementById('ninFile');
+      const bankFile = document.getElementById('bankFile');
+      const faceFile = document.getElementById('faceFile');
+      const ninPreview = document.getElementById('ninPreview');
+      const bankPreview = document.getElementById('bankPreview');
+      const facePreview = document.getElementById('facePreview');
+      const submitBtn = document.getElementById('submitBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const overlay = document.getElementById('overlay');
+      const toast = document.getElementById('toast');
+
+      const kvNin = document.getElementById('kv-nin');
+      const kvBank = document.getElementById('kv-bank');
+      const kvFace = document.getElementById('kv-face');
+      const statusBox = document.getElementById('statusBox');
+      const statusHeading = document.getElementById('statusHeading');
+      const statusText = document.getElementById('statusText');
+      const liveStatus = document.getElementById('liveStatus');
+      const smallStatus = document.getElementById('smallStatus');
+
+      // state
+      let currentUser = null;
+      let isSubmitting = false;
+      let pollIntervalId = null;
+      let pending = { nin: null, bank: null, face: null }; // File objects
+      let uploadedUrls = { nin: null, bank: null, face: null };
+
+      // firebase refs
+      const auth = firebase.auth();
+      const db = firebase.database();
+      const storage = firebase.storage();
+
+      const verificationSubmitted = `
+<section class="engles-notif" role="article" aria-label="Verification submitted">
+  <div class="header">
+    <div class="logo-badge" aria-hidden="true">EH</div>
+    <div>
+      <h2>Dear Valued EnglesHub User,</h2>
+      <p class="lead">Verification Submitted — Under Review</p>
+    </div>
+  </div>
+
+  <div class="body">
+    <p>
+      We have received your verification documents. Thank you — your submission is now under review by our verification team.
+      Our target review time is <strong>24 hours</strong>. If the verification team requires any additional information, we will contact you directly.
+    </p>
+
+    <p>
+      During review you may be contacted for clarifications. Please keep an eye on your email and notifications.
+    </p>
+
+    <p class="small">
+      For urgent questions or to provide supplementary documents, contact our support team.
+    </p>
+    <a class="btn btn-outline" href="support.html" role="button" aria-label="Contact support">Support</a>
+  </div>
+</section>`
+
+      // helpers
+      function showToast(msg, ms = 2800) {
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', ms);
+      }
+      function showOverlay(show) {
+        overlay.style.display = show ? 'flex' : 'none';
+        overlay.setAttribute('aria-hidden', !show);
+      }
+
+      function resetUIFiles() {
+        ninPreview.innerHTML = '';
+        bankPreview.innerHTML = '';
+        facePreview.innerHTML = '';
+        kvNin.textContent = '—';
+        kvBank.textContent = '—';
+        kvFace.textContent = '—';
+        pending = { nin: null, bank: null, face: null };
+        uploadedUrls = { nin: null, bank: null, face: null };
+      }
+
+      // validate file
+      function validateFile(f) {
+        if (!f) return { ok: false, msg: 'No file' };
+        if (!ACCEPTED_TYPES.includes(f.type)) return { ok: false, msg: 'Invalid file type' };
+        if (f.size > MAX_FILE_MB * 1024 * 1024) return { ok: false, msg: `File too large (max ${MAX_FILE_MB} MB)` };
+        return { ok: true };
+      }
+
+      // create preview card
+      function createPreviewCard(file, container, typeKey) {
+        container.innerHTML = '';
+        const item = document.createElement('div'); item.className = 'preview-item';
+        const img = document.createElement('img'); img.alt = file.name;
+        const reader = new FileReader();
+        reader.onload = (e) => { img.src = e.target.result; };
+        reader.readAsDataURL(file);
+
+        const meta = document.createElement('div'); meta.className = 'preview-meta';
+        const name = document.createElement('div'); name.textContent = file.name.length > 28 ? file.name.slice(0, 24) + '...' : file.name;
+        const right = document.createElement('div');
+        const rem = document.createElement('button'); rem.className = 'remove-btn'; rem.innerHTML = '<i class="fa fa-trash"></i>';
+        rem.title = 'Remove file';
+        rem.addEventListener('click', () => {
+          container.innerHTML = '';
+          pending[typeKey] = null;
+          uploadedUrls[typeKey] = null;
+          if (typeKey === 'nin') kvNin.textContent = '—';
+          if (typeKey === 'bank') kvBank.textContent = '—';
+          if (typeKey === 'face') kvFace.textContent = '—';
+        });
+        right.appendChild(rem);
+        meta.appendChild(name); meta.appendChild(right);
+
+        const progWrap = document.createElement('div'); progWrap.className = 'progress';
+        const prog = document.createElement('i'); prog.style.width = '0%';
+        progWrap.appendChild(prog);
+
+        item.appendChild(img);
+        item.appendChild(meta);
+        item.appendChild(progWrap);
+        container.appendChild(item);
+
+        return prog; // return element to update width
+      }
+
+      // wire inputs
+      function wireInput(inputEl, containerEl, key) {
+        inputEl.addEventListener('change', (e) => {
+          const f = e.target.files && e.target.files[0];
+          if (!f) return;
+          const v = validateFile(f);
+          if (!v.ok) { showToast(v.msg); inputEl.value = ''; return; }
+          pending[key] = f;
+          uploadedUrls[key] = null;
+          const prog = createPreviewCard(f, containerEl, key);
+          // store progress element so upload step can update it
+          containerEl._prog = prog;
+          if (key === 'nin') kvNin.textContent = f.name;
+          if (key === 'bank') kvBank.textContent = f.name;
+          if (key === 'face') kvFace.textContent = f.name;
+        });
+
+        // support drag & drop
+        const block = inputEl.closest('.upload-block');
+        block.addEventListener('dragover', (ev) => { ev.preventDefault(); block.classList.add('dragover'); });
+        block.addEventListener('dragleave', (ev) => { block.classList.remove('dragover'); });
+        block.addEventListener('drop', (ev) => {
+          ev.preventDefault(); block.classList.remove('dragover');
+          const files = ev.dataTransfer.files;
+          if (files && files.length) {
+            inputEl.files = files;
+            inputEl.dispatchEvent(new Event('change'));
+          }
+        });
+      }
+
+      wireInput(ninFile, ninPreview, 'nin');
+      wireInput(bankFile, bankPreview, 'bank');
+      wireInput(faceFile, facePreview, 'face');
+
+      // clear
+      clearBtn.addEventListener('click', (e) => { e.preventDefault(); resetUIFiles(); showToast('Cleared selected files'); });
+
+      // upload single file with progress, returns downloadURL
+      async function uploadWithProgress(file, uid, type, progEl) {
+        const timestamp = Date.now();
+        const safeName = file.name.replace(/\s+/g, '_').replace(/[^\w\.-]/g, '').toLowerCase();
+        const path = `${storageBase}/${uid}/${type}/${timestamp}_${safeName}`;
+        const ref = storage.ref().child(path);
+        const task = ref.put(file);
+        return await new Promise((resolve, reject) => {
+          task.on('state_changed',
+            snapshot => {
+              const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+              if (progEl) progEl.style.width = pct + '%';
+            },
+            err => reject(err),
+            async () => {
+              try {
+                const url = await ref.getDownloadURL();
+                resolve({ url, path });
+              } catch (err) { reject(err); }
+            }
+          );
+        });
+      }
+
+      // submission
+      submitBtn.addEventListener('click', async () => {
+        if (isSubmitting) return;
+        if (!currentUser) { showToast('Please sign in'); return; }
+
+        // validation
+        if (!pending.nin || !pending.bank || !pending.face) {
+          showToast('Please select all three files before submitting');
+          return;
+        }
+
+        isSubmitting = true;
+        showOverlay(true);
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        try {
+          // upload all in parallel but keep prog elements updated
+          const uploads = await Promise.all([
+            uploadWithProgress(pending.nin, currentUser.uid, 'nin', ninPreview._prog),
+            uploadWithProgress(pending.bank, currentUser.uid, 'bank', bankPreview._prog),
+            uploadWithProgress(pending.face, currentUser.uid, 'face', facePreview._prog)
+          ]);
+
+          // prepare DB payload
+          const payload = {
+            nin: { url: uploads[0].url, path: uploads[0].path, name: pending.nin.name },
+            bank: { url: uploads[1].url, path: uploads[1].path, name: pending.bank.name },
+            face: { url: uploads[2].url, path: uploads[2].path, name: pending.face.name },
+            status: 'pending',
+            submittedAt: firebase.database.ServerValue.TIMESTAMP
+          };
+
+          // write to DB under Verifications/<uid>
+          await db.ref(`Users/${currentUser.uid}/Verifications/Identity`).set(payload);
+
+          // update Users/<uid>/meta/verified => Processing (atomic update)
+          await db.ref(`Users/${currentUser.uid}/meta`).update({ verified: 'Processing' });
+          const notifRef = db.ref(`Users/${currentUser.uid}/notifications`).push();
+          await notifRef.set({
+            content: verificationSubmitted,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            status: 'new'
+          });
+
+          uploadedUrls = { nin: uploads[0].url, bank: uploads[1].url, face: uploads[2].url };
+
+          showToast('Verification submitted. We will review within 24–48 hours.');
+          updateStatusBox('Processing', 'Your documents have been submitted and are under review.', 'processing');
+          // start polling the user meta updated by admin
+          startStatusPoll(currentUser.uid);
+          window.location.href = 'dashboard.html.html'
+
+        } catch (err) {
+          console.error('submit error', err);
+          showToast('Error during submission: ' + (err.message || err));
+        } finally {
+          isSubmitting = false;
+          showOverlay(false);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit verification';
+        }
+      });
+
+      // status UI update
+      function updateStatusBox(state, text, cssClass) {
+        const box = statusBox;
+        box.className = 'status-box';
+        if (cssClass === 'processing') box.classList.add('status-processing');
+        else if (cssClass === 'verified') box.classList.add('status-verified');
+        else box.classList.add('status-unverified');
+        statusHeading.textContent = state === 'Processing' ? 'Verification in progress' : (state === 'Verified' ? 'Verification complete' : 'Verification required');
+        statusText.textContent = text;
+        liveStatus.textContent = state === 'Processing' ? 'Processing' : (state === 'Verified' ? 'Verified' : 'Not submitted');
+        smallStatus.textContent = state === 'Processing' ? 'Under review' : (state === 'Verified' ? 'Verified' : 'Action needed');
+      }
+
+      // poll for status (once every 4s up to a timeout) — clears if verified
+      function startStatusPoll(uid) {
+        if (pollIntervalId) return;
+        pollIntervalId = setInterval(async () => {
+          try {
+            const snap = await db.ref(`Users/${uid}`).once('value');
+            const v = snap.val();
+            if (v.meta.verified === 'Processing') {
+              updateStatusBox('Processing', 'Your documents are being reviewed. Please allow 24–48 hours.', 'processing');
+              submitBtn.disabled = true;
+            }
+            else if (v.meta.verified === 'Verified') {
+              submitBtn.disabled = true;
+              updateStatusBox('Verified', 'Your account has been verified — thank you!', 'verified');
+              showToast('Account verified — redirecting...');
+              clearInterval(pollIntervalId); pollIntervalId = null;
+              setTimeout(() => window.location.href = '/dashboard.html', 900);
+            } else {
+              updateStatusBox('Unverified', 'Please submit the required documents.', 'unverified');
+            }
+          } catch (err) { console.error('poll err', err); }
+        }, 4000);
+      }
+
+      // initial auth & status load
+      auth.onAuthStateChanged(async user => {
+        currentUser = user;
+        resetUIFiles();
+        if (!user) {
+          updateStatusBox('Unverified', 'Please sign in to submit verification.', 'unverified');
+          submitBtn.disabled = true;
+          return;
+        }
+        submitBtn.disabled = false;
+        // load existing verification record (if any)
+        try {
+          const vSnap = await db.ref(`Verifications/${user.uid}`).once('value');
+          const v = vSnap.val();
+          if (v) {
+            if (v.nin?.name) { kvNin.textContent = v.nin.name; kvBank.textContent = v.bank?.name || '—'; kvFace.textContent = v.face?.name || '—'; }
+            if (v.status === 'pending' || v.status === 'processing') {
+              updateStatusBox('Processing', 'Your documents are under review.', 'processing');
+              startStatusPoll(user.uid);
+            } else if (v.status === 'approved' || v.status === 'verified') {
+              updateStatusBox('Verified', 'Your account has been verified.', 'verified');
+            } else {
+              updateStatusBox('Unverified', 'Please submit the required documents.', 'unverified');
+            }
+          } else {
+            // no verification doc yet — check user meta
+            const metaSnap = await db.ref(`Users/${user.uid}/meta/verified`).once('value');
+            const m = metaSnap.val();
+            if (m === 'Processing') { updateStatusBox('Processing', 'Your documents are under review.', 'processing'); startStatusPoll(user.uid); }
+            else if (m === 'Verified') { updateStatusBox('Verified', 'Your account has been verified.', 'verified'); }
+            else updateStatusBox('Unverified', 'Please submit the required documents.', 'unverified');
+          }
+        } catch (err) {
+          console.error('init load err', err);
+          showToast('Error loading verification status');
+        }
+      });
+
+      // graceful unload: clear poll
+      window.addEventListener('beforeunload', () => { if (pollIntervalId) clearInterval(pollIntervalId); });
+
+
+
+
+
+      // --- Camera integration (robust, user-gesture safe) ---
+      document.addEventListener('DOMContentLoaded', () => {
+        // Elements (must match the HTML you already added)
+        const cameraOverlay = document.getElementById('cameraOverlay');
+        const cameraVideo = document.getElementById('cameraVideo');
+        const captureBtn = document.getElementById('captureBtn');
+        const cancelCamera = document.getElementById('cancelCamera');
+        const switchCamera = document.getElementById('switchCamera');
+
+        if (!cameraOverlay || !cameraVideo || !captureBtn || !cancelCamera || !switchCamera) {
+          console.error('Camera elements missing — check HTML IDs');
+          return;
+        }
+
+        // Start hidden (safer than `hidden` attribute)
+        cameraOverlay.style.display = 'none';
+
+        let cameraStream = null;
+        let activeKey = null;
+        let activeContainer = null;
+        let facingMode = 'environment'; // 'environment' rear, 'user' front
+
+        // Utility: display overlay
+        function showOverlayCamera() {
+          cameraOverlay.style.display = 'flex';
+          cameraOverlay.style.alignItems = 'center';
+          cameraOverlay.style.justifyContent = 'center';
+        }
+        function hideOverlayCamera() {
+          cameraOverlay.style.display = 'none';
+        }
+
+        // Ensure secure context
+        function isSecureContextForCamera() {
+          return (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+        }
+
+        // Open camera (called directly on user click)
+        async function openCamera(key, container) {
+          activeKey = key;
+          activeContainer = container || document.getElementById(`${key}Preview`);
+
+          if (!isSecureContextForCamera()) {
+            showToast('Camera requires HTTPS or localhost. Please use a secure page or use file upload.');
+            return;
+          }
+
+          showOverlayCamera();
+
+          try {
+            // Request camera (user gesture required — called on click)
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode },
+              audio: false
+            });
+
+            // Wire stream to video
+            cameraVideo.muted = true;            // muted helps autoplay in some browsers
+            cameraVideo.srcObject = cameraStream;
+            try { await cameraVideo.play(); } catch (err) { /* ignore play errors */ }
+          } catch (err) {
+            console.error('getUserMedia error', err);
+            hideOverlayCamera();
+            if (err && err.name === 'NotAllowedError') {
+              showToast('Camera permission denied. Allow camera access in your browser settings.');
+            } else {
+              showToast('Unable to open camera on this device.');
+            }
+          }
+        }
+
+        // Close and cleanup camera
+        function closeCamera() {
+          hideOverlayCamera();
+          if (cameraStream) {
+            cameraStream.getTracks().forEach(t => t.stop());
+            cameraStream = null;
+          }
+          cameraVideo.srcObject = null;
+          activeKey = null;
+          activeContainer = null;
+        }
+
+        // Capture image -> File -> reuse existing preview/upload logic
+        captureBtn.addEventListener('click', () => {
+          if (!cameraVideo || !activeKey || !activeContainer) return;
+
+          const width = cameraVideo.videoWidth || 1280;
+          const height = cameraVideo.videoHeight || 720;
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+
+          // Draw the frame to canvas
+          ctx.drawImage(cameraVideo, 0, 0, width, height);
+
+          canvas.toBlob(blob => {
+            if (!blob) { showToast('Capture failed'); return; }
+
+            const file = new File([blob], `camera_${activeKey}_${Date.now()}.jpg`, { type: blob.type || 'image/jpeg' });
+
+            // Validate with your existing validator
+            const v = validateFile(file);
+            if (!v.ok) {
+              showToast(v.msg);
+              closeCamera();
+              return;
+            }
+
+            // Set pending and create preview exactly as before
+            pending[activeKey] = file;
+            uploadedUrls[activeKey] = null;
+            const prog = createPreviewCard(file, activeContainer, activeKey);
+            activeContainer._prog = prog;
+
+            if (activeKey === 'nin') kvNin.textContent = file.name;
+            if (activeKey === 'bank') kvBank.textContent = file.name;
+            if (activeKey === 'face') kvFace.textContent = file.name;
+
+            closeCamera();
+          }, 'image/jpeg', 0.92);
+        });
+
+        // Cancel
+        cancelCamera.addEventListener('click', () => {
+          closeCamera();
+        });
+
+        // Switch camera (tries to reopen with opposite facingMode)
+        switchCamera.addEventListener('click', async () => {
+          facingMode = (facingMode === 'environment') ? 'user' : 'environment';
+          // restart stream if open
+          if (cameraStream) {
+            cameraStream.getTracks().forEach(t => t.stop());
+            cameraStream = null;
+            try {
+              cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode },
+                audio: false
+              });
+              cameraVideo.srcObject = cameraStream;
+              try { await cameraVideo.play(); } catch (e) { }
+            } catch (err) {
+              console.error('switch camera error', err);
+              showToast('Unable to switch camera on this device.');
+              // revert facing mode on failure
+              facingMode = (facingMode === 'environment') ? 'user' : 'environment';
+            }
+          } else {
+            // If camera not open, open it (so switch acts like "open in front/rear")
+            if (activeKey && activeContainer) openCamera(activeKey, activeContainer);
+          }
+        });
+
+        // Intercept label clicks to open camera (preserve drag/drop and input change fallback)
+        function attachCameraTriggers() {
+          const ninLabel = document.querySelector('label[for="ninFile"]');
+          const bankLabel = document.querySelector('label[for="bankFile"]');
+          const faceLabel = document.querySelector('label[for="faceFile"]');
+
+          if (ninLabel) ninLabel.addEventListener('click', (e) => { e.preventDefault(); openCamera('nin', document.getElementById('ninPreview')); });
+          if (bankLabel) bankLabel.addEventListener('click', (e) => { e.preventDefault(); openCamera('bank', document.getElementById('bankPreview')); });
+          if (faceLabel) faceLabel.addEventListener('click', (e) => { e.preventDefault(); openCamera('face', document.getElementById('facePreview')); });
+        }
+
+        attachCameraTriggers();
+      });
+
+
+    })();
+  </script>
+</body>
+
+</html>

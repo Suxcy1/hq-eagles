@@ -1,0 +1,176 @@
+/* loader.css - supports inline and fullscreen modes */
+:root {
+    --eh-text: #1f0250;
+    --eh-ring: #ed2424;
+    --eh-ring-bg: rgba(62, 62, 62, 0.998);
+    --eh-bg: #eae2e2;
+}
+
+/* Base - hidden by default */
+.eh-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .28s ease, visibility .28s;
+}
+
+/* Fullscreen overlay mode (default) */
+.eh-loader.eh-fullscreen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eh-bg);
+    z-index: 99999;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Inline mode styling: placed inside target element with position relative */
+.eh-loader.eh-inline {
+    position: absolute;
+    inset: 0;
+    /* will fill the containing block when target is position:relative */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    /* subtle overlay over the area */
+    border-radius: 8px;
+}
+
+/* If you want loader as a small badge instead of overlay, use .eh-inline.badge */
+.eh-loader.eh-inline.badge {
+    position: relative;
+    display: inline-flex;
+    inset: auto;
+    background: transparent;
+}
+
+/* Internal layout */
+.eh-inner {
+    text-align: center;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Logo area */
+.eh-logo-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 8px;
+}
+
+.eh-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+    transform-origin: 50% 50%;
+    animation: eh-pulse 1.4s ease-in-out infinite;
+}
+
+/* SVG ring */
+.eh-ring {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.ring-bg {
+    fill: none;
+    stroke: var(--eh-ring-bg);
+    stroke-width: 8;
+}
+
+.ring {
+    fill: none;
+    stroke: var(--eh-ring);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 314;
+    stroke-dashoffset: 314;
+    transform-origin: 50% 50%;
+    animation: eh-dash 1.8s ease-in-out infinite;
+}
+
+/* Texts */
+.eh-title {
+    margin: 0;
+    font-size: 20px;
+    color: var(--eh-text);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.eh-sub {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--eh-text);
+    opacity: .85;
+}
+
+/* Animations */
+@keyframes eh-pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes eh-dash {
+    0% {
+        stroke-dashoffset: 314;
+        transform: rotate(0deg);
+    }
+
+    50% {
+        stroke-dashoffset: 80;
+        transform: rotate(180deg);
+    }
+
+    100% {
+        stroke-dashoffset: 314;
+        transform: rotate(360deg);
+    }
+}
+
+/* Size tweaks for small inline/badge mode */
+.eh-loader.badge .eh-logo-wrap {
+    width: 48px;
+    height: 48px;
+    margin: 0;
+}
+
+.eh-loader.badge .eh-title,
+.eh-loader.badge .eh-sub {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width:420px) {
+    .eh-logo-wrap {
+        width: 110px;
+        height: 110px;
+    }
+
+    .eh-title {
+        font-size: 18px;
+    }
+
+    .eh-sub {
+        font-size: 12px;
+    }
+}

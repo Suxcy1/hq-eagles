@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Loader test</title>
+    <style>
+        /* simplified loader.css for the test */
+        :root {
+            --eh-text: #000;
+            --eh-ring: #000;
+            --eh-ring-bg: rgba(0, 0, 0, 0.08);
+            --eh-bg: #fff;
+        }
+
+        .eh-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity .28s, visibility .28s;
+        }
+
+        .eh-fullscreen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--eh-bg);
+            z-index: 99999;
+        }
+
+        .eh-inner {
+            text-align: center;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .eh-logo-wrap {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 8px;
+        }
+
+        .eh-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+            transform-origin: 50% 50%;
+            animation: eh-pulse 1.4s infinite;
+        }
+
+        .eh-ring {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: var(--eh-ring-bg);
+            stroke-width: 8;
+        }
+
+        .ring {
+            fill: none;
+            stroke: var(--eh-ring);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 314;
+            stroke-dashoffset: 314;
+            animation: eh-dash 1.8s infinite;
+            transform-origin: 50% 50%;
+        }
+
+        .eh-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--eh-text);
+            letter-spacing: 1px;
+        }
+
+        .eh-sub {
+            margin: 6px 0 0;
+            font-size: 13px;
+            color: var(--eh-text);
+            opacity: .85;
+        }
+
+        @keyframes eh-pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes eh-dash {
+            0% {
+                stroke-dashoffset: 314;
+                transform: rotate(0deg);
+            }
+
+            50% {
+                stroke-dashoffset: 80;
+                transform: rotate(180deg);
+            }
+
+            100% {
+                stroke-dashoffset: 314;
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Page content behind loader</h1>
+    <p>Open console to see any errors.</p>
+
+    <!-- Inline loader template (no external files required for test) -->
+    <div id="eh-loader-test" class="eh-fullscreen">
+        <div class="eh-inner">
+            <div class="eh-logo-wrap">
+                <!-- replace this URL with your EH image if you want; using a circle placeholder svg via data: -->
+                <img class="eh-logo"
+                    src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><rect width='100%' height='100%' fill='%23000' rx='40'/><text x='50%' y='55%' font-size='60' fill='%23fff' font-family='Arial' text-anchor='middle'>EH</text></svg>"
+                    alt="EH">
+                <svg class="eh-ring" viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
+                    <circle class="ring" cx="60" cy="60" r="50"></circle>
+                </svg>
+            </div>
+            <div class="eh-texts">
+                <h2 class="eh-title">EAGLES HUB</h2>
+                <p class="eh-sub">Connecting People Building Power</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // tiny Loader API for this test
+        window.Loader = {
+            show() { const el = document.getElementById('eh-loader-test'); if (!el) return; el.classList.remove('eh-hidden'); },
+            hide() { const el = document.getElementById('eh-loader-test'); if (!el) return; el.classList.add('eh-hidden'); },
+            wrap(promise) { this.show(); return promise.finally(() => this.hide()); }
+        };
+
+        // Test: show loader, simulate work, hide
+        (async () => {
+            Loader.show();
+            await new Promise(r => setTimeout(r, 1500)); // simulate heavy async work
+            Loader.hide();
+
+            // Example of using wrap:
+            // await Loader.wrap(fetch('/some/api').then(r => r.json()));
+        })();
+    </script>
+</body>
+
+</html>

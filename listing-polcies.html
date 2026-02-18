@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eagles Hub — Simple Listing Policy</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+  <link rel="manifest" href="images/favicon_io/site.webmanifest">
+  <style>
+    :root {
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --accent: #0b71ff;
+      --muted: #6b7280;
+      --good: #10b981;
+      --danger: #ef4444;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.45;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 28px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 6px 22px rgba(8, 15, 30, 0.06);
+      padding: 22px;
+    }
+
+    header {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 4px 14px rgba(11, 113, 255, 0.18);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    p.lead {
+      margin: 8px 0 18px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    section+section {
+      margin-top: 14px;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
+    ul.simple {
+      padding-left: 18px;
+      margin: 8px 0;
+    }
+
+    ul.simple li {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    .note {
+      font-size: 14px;
+      background: #fff7ed;
+      border-left: 4px solid #f59e0b;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #92400e;
+      margin-top: 12px;
+    }
+
+    .danger {
+      background: #fff0f2;
+      border-left: 4px solid var(--danger);
+      color: #991b1b;
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .cta {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(11, 113, 255, 0.14);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(11, 113, 255, 0.12);
+    }
+
+    footer {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width:520px) {
+      .wrap {
+        padding: 12px
+      }
+
+      header {
+        gap: 10px
+      }
+
+      .logo {
+        width: 48px;
+        height: 48px;
+        font-size: 16px
+      }
+
+      h1 {
+        font-size: 18px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card" role="main" aria-labelledby="title">
+      <header>
+        <div class="logo" aria-hidden="true">EH</div>
+        <div>
+          <h1 id="title">Simple Listing Policy</h1>
+          <p class="lead">Short and clear rules for adding property listings on Eagles Hub.</p>
+        </div>
+      </header>
+
+      <section>
+        <h2>1. What this is</h2>
+        <p class="muted">This page tells you the rules for posting a property. It is short. It uses simple words so
+          everyone can read it.</p>
+      </section>
+
+      <section>
+        <h2>2. Who can list</h2>
+        <ul class="simple">
+          <li>Landlords who own the property.</li>
+          <li>Agents who have permission from the landlord.</li>
+          <li>People must be 18 years or older.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. What you can list</h2>
+        <ul class="simple">
+          <li>Houses, apartments, rooms for rent.</li>
+          <li>Short-term or long-term rentals.</li>
+          <li>Clear photos and correct price.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. What you must not post</h2>
+        <ul class="simple">
+          <li>No fake listings. Do not copy or steal other people’s ads.</li>
+          <li>No illegal properties or things that break the law.</li>
+          <li>No hateful, violent, or harmful content.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. Tell the truth</h2>
+        <ul class="simple">
+          <li>Write the correct price and correct address.</li>
+          <li>Say if bills or service fees are included or not.</li>
+          <li>Show clear photos. Do not use trick images.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>6. Safety and law</h2>
+        <p class="muted">Your listing must follow the country laws and local rules. Eagles Hub also follows government
+          policies while we build the site. If a law or rule says something different, we will follow the law.</p>
+        <div class="note">If you are not sure about a law, check with a local office or lawyer first.</div>
+      </section>
+
+      <section>
+        <h2>7. Fees and payment</h2>
+        <p class="muted">We will say clearly if there is a fee for listing or promoting. Do not send money outside the
+          site unless we tell you. Keep payment records and receipts.</p>
+      </section>
+
+      <section>
+        <h2>8. When things go wrong (errors & broken pages)</h2>
+        <p class="muted">We are still building parts of the site. You may see an error or a page that does not work.
+          This can happen sometimes.</p>
+        <div class="danger">If you see errors, please tell us. Tell us what you did and what you saw. This helps us fix
+          it fast.</div>
+        <div style="margin-top:10px" class="muted">How to report:</div>
+        <div class="cta" aria-hidden="false">
+          <a class="btn btn-primary" href="https://hq-eagleshub.web.app/support_page.html" target="_blank"
+            rel="noopener">Report on our Contact Page</a>
+          <a class="btn btn-ghost" href="mailto.support_page@engleshib.web.app">Email: contact@engleshib.web.app</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>9. Changes to this policy</h2>
+        <p class="muted">We may change these rules as we grow. When we change, we will post the new policy here. Check
+          this page now and then.</p>
+      </section>
+
+      <section>
+        <h2>10. Questions or help</h2>
+        <p class="muted">If you need help, visit our contact page or send an email. We will try to reply quickly.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://hq-eagleshub.web.app/support_page.html" target="_blank"
+            rel="noopener">Contact Us</a>
+          <a class="btn btn-ghost" href="mailto:contact@engleshib.web.app">Email Us</a>
+        </div>
+      </section>
+
+      <footer>
+        <div>© Eagles Hub — Connecting people, building power.</div>
+        <div style="margin-top:6px" class="muted">This policy follows government rules while we build the site. Thank
+          you for using Eagles Hub.</div>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>

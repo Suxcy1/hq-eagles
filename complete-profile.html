@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Complete Profile — ElitePro</title>
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '645771161540733');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=645771161540733&ev=PageView&noscript=1" /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+  <link rel="manifest" href="images/favicon_io/site.webmanifest">
+  <style>
+    :root {
+      --primary-orange: #FF6B35;
+      --primary-blue: #004E89;
+      --light-gray: #f6f8fb;
+      --muted: #6b7280;
+      --surface: #ffffff;
+      --radius: 12px;
+      --shadow: 0 8px 30px rgba(16, 24, 40, 0.06);
+      --glass: rgba(255, 255, 255, 0.6);
+      --success: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial;
+      margin: 0;
+      background: var(--light-gray);
+      color: #0b1220;
+      -webkit-font-smoothing: antialiased;
+      padding: 28px;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    header.page-head {
+      grid-column: 1/-1;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px
+    }
+
+    header.page-head h1 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--primary-blue)
+    }
+
+    header.page-head p {
+      margin: 0;
+      color: var(--muted)
+    }
+
+    /* Left: form */
+    form#profileForm {
+      display: flex;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px
+    }
+
+    .section-title h2 {
+      font-size: 16px;
+      margin: 0;
+      color: var(--primary-blue)
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px
+    }
+
+    .grid.cols-2 {
+      grid-template-columns: repeat(2, 1fr)
+    }
+
+    .grid.cols-3 {
+      grid-template-columns: repeat(3, 1fr)
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--primary-blue);
+      font-weight: 600;
+      font-size: 13px
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #e6edf6;
+      background: white;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(0, 78, 137, 0.06);
+      border-color: var(--primary-blue)
+    }
+
+    /* Profile image */
+    .profile-block {
+      display: flex;
+      gap: 16px;
+      align-items: center
+    }
+
+    .avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 3px solid var(--primary-orange)
+    }
+
+    .avatar-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .btn {
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--primary-orange), #FF8C42);
+      color: white
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(0, 78, 137, 0.08);
+      color: var(--primary-blue)
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    /* right preview */
+    .summary {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .summary .card {
+      padding: 14px
+    }
+
+    .summary h3 {
+      margin: 0;
+      color: var(--primary-blue)
+    }
+
+    .summary .meta {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    /* form footer */
+    .form-footer {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    /* loading overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(9, 12, 18, 0.35);
+      z-index: 1100
+    }
+
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 5px solid #fff;
+      border-top-color: var(--primary-orange);
+      border-radius: 50%;
+      animation: spin 1s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      right: 20px;
+      top: 24px;
+      background: #06121a;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      display: none;
+      z-index: 1200
+    }
+
+    .toast.show {
+      display: flex
+    }
+
+    /* error text */
+    .error {
+      color: #dc2626;
+      font-size: 13px;
+      margin-top: 6px
+    }
+
+    /* responsive */
+    @media (max-width:1000px) {
+      .wrap {
+        grid-template-columns: 1fr;
+        padding: 12px
+      }
+
+      .card {
+        padding: 16px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrap">
+    <header class="page-head">
+      <div>
+        <h1>Complete Your Profile</h1>
+        <p class="small">Finish your account so you can list properties and access all features.</p>
+      </div>
+      <div>
+        <button id="skipBtn" class="btn btn-outline" title="Skip for now">Skip</button>
+      </div>
+    </header>
+
+    <!-- LEFT: form -->
+    <div class="card" aria-labelledby="profile-heading">
+      <form id="profileForm" autocomplete="off" novalidate>
+        <div>
+          <div class="section-title">
+            <h2 id="profile-heading">Profile</h2>
+            <div class="section-sub">Name, photo and public display</div>
+          </div>
+
+          <div class="profile-block">
+            <img id="profilePreview" class="avatar" src="https://via.placeholder.com/400x300?text=Profile"
+              alt="profile preview">
+            <div class="avatar-actions">
+              <label for="profileImage" class="btn btn-outline" style="cursor:pointer"><i class="fa fa-upload"></i>
+                Upload photo</label>
+              <input id="profileImage" name="profileImage" type="file" accept="image/*" style="display:none">
+              <button id="removeImage" type="button" class="btn"
+                style="background:#fff;border:1px solid #eee">Remove</button>
+              <div class="small">Recommended: 400×300px, JPG/PNG</div>
+              <div id="uploadProgress" class="small" style="display:none">Uploading: <span id="uploadPercent">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">
+            <h2>Account</h2>
+            <div class="section-sub">Type and how you'll be displayed</div>
+          </div>
+          <div class="grid cols-2">
+            <div>
+              <label for="accountType">Account type</label>
+              <select id="accountType" required>
+                <option value="">Select account type</option>
+                <option value="owner">Property Owner</option>
+                <option value="agent">Agent / Company</option>
+              </select>
+              <div id="accountTypeError" class="error" role="alert" style="display:none"></div>
+            </div>
+            <div>
+              <label for="displayName" id="displayNameLabel">Display name</label>
+              <input id="displayName" type="text" placeholder="How users will see you" required>
+              <div class="small">Publicly visible</div>
+            </div>
+          </div>
+
+          <div id="companySection" style="display:none; margin-top:12px">
+            <label for="companyName">Company name</label>
+            <input id="companyName" type="text" placeholder="Company / agency name">
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">
+            <h2>Personal</h2>
+            <div class="section-sub">Contact details</div>
+          </div>
+          <div class="grid cols-2">
+            <div>
+              <label for="firstName">First name</label>
+              <input id="firstName" type="text" required>
+            </div>
+            <div>
+              <label for="lastName">Last name</label>
+              <input id="lastName" type="text" required>
+            </div>
+            <div>
+              <label for="email">Email address</label>
+              <input id="email" type="email" disabled>
+              <div class="small">Email is verified during signup</div>
+            </div>
+            <div>
+              <label for="phone">Phone number</label>
+              <input id="phone" type="tel" placeholder="08012345678" inputmode="tel" required>
+              <div class="small">Nigerian numbers like 08012345678</div>
+              <div id="phoneError" class="error" style="display:none"></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">
+            <h2>Location</h2>
+            <div class="section-sub">Where your properties are located</div>
+          </div>
+
+          <div class="grid cols-3">
+            <div>
+              <label for="stateSelect">State</label>
+              <select id="stateSelect" required>
+                <option value="">Choose state</option>
+              </select>
+            </div>
+            <div>
+              <label for="citySelect">City</label>
+              <select id="citySelect" required>
+                <option value="">Choose city</option>
+              </select>
+            </div>
+            <div>
+              <label for="streetAddress">Street / Area</label>
+              <input id="streetAddress" type="text" placeholder="Street, estate or close" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-footer" style="margin-top:12px">
+          <div class="note">All fields marked required must be completed to proceed.</div>
+          <div style="display:flex; gap:8px;">
+            <button id="cancelBtn" type="button" class="btn btn-outline">Cancel</button>
+            <button id="saveBtn" class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Save Profile</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- RIGHT: summary / preview -->
+    <aside class="summary">
+      <div class="card">
+        <h3>Preview</h3>
+        <div class="meta" id="previewName">Your name will appear here</div>
+        <div style="height:12px"></div>
+        <div id="previewRole" class="meta">Account type</div>
+        <div style="height:10px"></div>
+        <div id="previewContact" class="meta">Contact details</div>
+      </div>
+
+      <div class="card">
+        <h3>Verification & Plan</h3>
+        <div class="meta" id="verificationNote">Complete verification to list properties.</div>
+        <div style="height:10px"></div>
+        <div>
+          <label class="small">Plan usage</label>
+          <div style="display:flex; gap:8px; align-items:center; margin-top:6px">
+            <div style="flex:1; height:10px; background:#eef4fb; border-radius:999px; overflow:hidden">
+              <div id="planFill"
+                style="width:0%; height:100%; background:linear-gradient(90deg,var(--primary-blue), var(--accent-blue));">
+              </div>
+            </div>
+            <div class="small" id="planCount">0/1</div>
+          </div>
+        </div>
+        <div style="height:10px"></div>
+        <div style="display:flex; gap:8px">
+          <button id="goVerify" class="btn btn-outline">Verify account</button>
+          <button id="goSubscribe" class="btn btn-primary">Subscribe</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Tips</h3>
+        <ul style="color:var(--muted); font-size:14px; padding-left:18px;">
+          <li>Use a real photograph — helps trust.</li>
+          <li>Complete company information if you manage multiple listings.</li>
+          <li>Phone number helps tenants contact you quickly.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- overlays & toast -->
+  <div id="overlay" class="overlay" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Firebase compat (leave firebase.js as your config) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-storage-compat.js"></script>
+  <script src="firebase.js"></script>
+
+  <script>
+    /* Redesigned Complete Profile — client logic
+       Notes:
+       - Assumes `javascript/firebase.js` initializes firebase.app()
+       - Uses compat SDK references (firebase.auth(), firebase.database(), firebase.storage())
+    */
+
+    (function () {
+      const auth = firebase.auth();
+      const db = firebase.database();
+      const storage = firebase.storage();
+      const profileComplete = `
+<section class="engles-notif" role="article" aria-label="Profile completed, verification required">
+  <div class="header">
+    <div class="logo-badge" aria-hidden="true">EH</div>
+    <div>
+      <h2>Dear Valued EaglesHub User,</h2>
+      <p class="lead">Profile Completed — Identity Verification Required</p>
+    </div>
+  </div>
+
+  <div class="body">
+    <p>
+      Thank you for completing your profile. Your account is almost ready — to begin uploading properties and using seller tools, please complete identity verification.
+      Verification ensures trust for buyers and unlocks listing privileges on our marketplace.
+    </p>
+
+    <p>
+      <strong>Next step:</strong> Submit your identity documents for verification. Once verified, you’ll be able to upload properties and access promotional services.
+    </p>
+
+    <p class="small">Verification is quick and secure. For assistance, visit our support center.</p>
+    <a class="btn btn-outline" href="support.html" role="button" aria-label="Contact support">Contact Support</a>
+  </div>
+</section>`
+
+      // DOM refs
+      const profileForm = document.getElementById('profileForm');
+      const profileImageInput = document.getElementById('profileImage');
+      const profilePreview = document.getElementById('profilePreview');
+      const uploadProgress = document.getElementById('uploadProgress');
+      const uploadPercent = document.getElementById('uploadPercent');
+      const removeImageBtn = document.getElementById('removeImage');
+      const accountTypeEl = document.getElementById('accountType');
+      const companySection = document.getElementById('companySection');
+      const displayNameLabel = document.getElementById('displayNameLabel');
+      const emailEl = document.getElementById('email');
+      const phoneEl = document.getElementById('phone');
+      const stateSelect = document.getElementById('stateSelect');
+      const citySelect = document.getElementById('citySelect');
+      const toast = document.getElementById('toast');
+      const overlay = document.getElementById('overlay');
+      const saveBtn = document.getElementById('saveBtn');
+      const previewName = document.getElementById('previewName');
+      const previewRole = document.getElementById('previewRole');
+      const previewContact = document.getElementById('previewContact');
+      const planFillEl = document.getElementById('planFill');
+      const planCountEl = document.getElementById('planCount');
+
+      let currentUser = null;
+      let userData = {};
+      let pendingImageFile = null;
+      let uploadedImageURL = null;
+
+      let ClientIp;
+      let UserAgent;
+
+      // Nigeria states/cities (kept from your list)
+      const nigeriaLocations = {
+        "Abia": ["Umuahia", "Aba", "Ohafia", "Arochukwu"],
+        "Adamawa": ["Yola", "Mubi", "Jimeta", "Numan"],
+        "Akwa Ibom": ["Uyo", "Eket", "Ikot Ekpene", "Oron"],
+        "Anambra": ["Awka", "Onitsha", "Nnewi", "Aguata"],
+        "Bauchi": ["Bauchi", "Azare", "Jama'are", "Katagum"],
+        "Bayelsa": ["Yenagoa", "Brass", "Sagbama", "Nembe"],
+        "Benue": ["Makurdi", "Gboko", "Otukpo", "Katsina-Ala"],
+        "Borno": ["Maiduguri", "Bama", "Dikwa", "Biue"],
+        "Cross River": ["Calabar", "Ugep", "Ogoja", "Ikom"],
+        "Delta": ["Asaba", "Warri", "Sapele", "Koko"],
+        "Ebonyi": ["Abakaliki", "Afikpo", "Onueke", "Edda"],
+        "Edo": ["Benin City", "Auchi", "Ekpoma", "Igueben"],
+        "Ekiti": ["Ado Ekiti", "Ikere", "Ise", "Emure"],
+        "Enugu": ["Enugu", "Nsukka", "Agbani", "Awgu"],
+        "Gombe": ["Gombe", "Bajoga", "Kumo", "Dukku"],
+        "Imo": ["Owerri", "Okigwe", "Orlu", "Mbaise"],
+        "Jigawa": ["Dutse", "Hadejia", "Birnin Kudu", "Gumel"],
+        "Kaduna": ["Kaduna", "Zaria", "Kafanchan", "Sabon Gari"],
+        "Kano": ["Kano", "Daura", "Wudil", "Gaya"],
+        "Katsina": ["Katsina", "Daura", "Funtua", "Malumfashi"],
+        "Kebbi": ["Birnin Kebbi", "Argungu", "Yelwa", "Zuru"],
+        "Kogi": ["Lokoja", "Okene", "Idah", "Kabba"],
+        "Kwara": ["Ilorin", "Offa", "Jebba", "Patigi"],
+        "Lagos": ["Lagos Island", "Lagos Mainland", "Ikeja", "Lekki"],
+        "Nasarawa": ["Lafia", "Keffi", "Akwanga", "Nasarawa"],
+        "Niger": ["Minna", "Bida", "Suleja", "Kontagora"],
+        "Ogun": ["Abeokuta", "Sagamu", "Ijebu Ode", "Ilaro"],
+        "Ondo": ["Akure", "Ondo", "Owo", "Okitipupa"],
+        "Osun": ["Osogbo", "Ilesa", "Ede", "Ikirun"],
+        "Oyo": ["Ibadan", "Ogbomoso", "Oyo", "Iseyin"],
+        "Plateau": ["Jos", "Bukuru", "Shendam", "Pankshin"],
+        "Rivers": ["Port Harcourt", "Bonny", "Okrika", "Eleme"],
+        "Sokoto": ["Sokoto", "Tambuwal", "Wurno", "Gwadabawa"],
+        "Taraba": ["Jalingo", "Bali", "Wukari", "Ibi"],
+        "Yobe": ["Damaturu", "Potiskum", "Gashua", "Nguru"],
+        "Zamfara": ["Gusau", "Kaura Namoda", "Anka", "Talata Mafara"],
+        "FCT": ["Abuja", "Gwagwalada", "Kuje", "Bwari"]
+      };
+
+      // populate states select
+      Object.keys(nigeriaLocations).forEach(s => {
+        const opt = document.createElement('option'); opt.value = s; opt.textContent = s; stateSelect.appendChild(opt);
+      });
+
+      // helper: show toast
+      function showToast(msg, ms = 2400) {
+        toast.textContent = msg; toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), ms);
+      }
+
+      // helper: overlay
+      function showOverlay(show) {
+        overlay.style.display = show ? 'flex' : 'none';
+      }
+
+      // phone validation (simple nigeria pattern: 11 digits starting with 0)
+      function validatePhone(v) {
+        if (!v) return false;
+        const re = /^0\d{10}$/;
+        return re.test(v);
+      }
+
+      // populate cities
+      function populateCities(state, selected) {
+        citySelect.innerHTML = '<option value="">Choose city</option>';
+        if (!state || !nigeriaLocations[state]) return;
+        nigeriaLocations[state].forEach(c => {
+          const o = document.createElement('option'); o.value = c; o.textContent = c;
+          if (selected && selected === c) o.selected = true;
+          citySelect.appendChild(o);
+        });
+      }
+
+      async function getClientIp() {
+        try {
+          const response = await fetch("https://api.ipify.org?format=json");
+          const data = await response.json();
+          console.log(data.ip);
+
+          ClientIp = data.ip;
+          return data.ip; // real public IP
+        } catch (e) {
+          console.error("Unable to get IP:", e);
+          return null;
+        }
+      }
+
+      function getUserAgent() {
+        return navigator.userAgent;
+      }
+
+      function getFbp() {
+        return document.cookie
+          .split('; ')
+          .find(row => row.startsWith('_fbp='))?.split('=')[1];
+      }
+
+      function getFbc() {
+        return document.cookie
+          .split('; ')
+          .find(row => row.startsWith('_fbc='))?.split('=')[1];
+      }
+
+      function getSavedFbc() {
+
+        // --- helpers ---
+        function getCookie(name) {
+          return document.cookie
+            .split("; ")
+            .find(row => row.startsWith(name + "="))
+            ?.split("=")[1] || null;
+        }
+
+        function setCookie(name, value, days = 90) {
+          const expires = new Date(Date.now() + days * 86400 * 1000).toUTCString();
+          document.cookie = `${name}=${value}; path=/; expires=${expires}; SameSite=Lax`;
+        }
+
+        // --- 1. Try get from cookie ---
+        let fbc = getCookie("eagleshub_fbc");
+
+        // --- 2. If cookie missing, try from localStorage ---
+        if (!fbc) {
+          try {
+            fbc = localStorage.getItem("eagleshub_fbc");
+          } catch (e) {
+            // ignore storage errors
+          }
+
+          // --- 3. If found in localStorage, auto-repair cookie ---
+          if (fbc) {
+            setCookie("eagleshub_fbc", fbc, 90); // restore cookie for 90 days
+          }
+        }
+
+        // --- 4. If still missing, return fallback ---
+        return fbc || "not_found";
+      }
+
+
+
+      function generateUUID() {
+        // Creates unique event_id for each action
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+      }
+
+      // Send event to both Facebook Pixel (browser) and your server (CAPI)
+      async function trackEvent(eventName, userData = {}) {
+        const eventId = generateUUID();
+        const endpoint = 'https://engleshub.onrender.com/api/fb-events';
+        // const endpoint = 'https://engleshub.onrender.com/api/fb-events'; // <== change to your backend endpoint
+
+
+        // 2️⃣ Send same event_id + user info to server
+        try {
+          console.log(userData);
+
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event_name: eventName,
+              event_id: eventId,
+              user_data: userData,
+              client_user_agent: navigator.userAgent,
+              client_ip_address: '', // leave empty; server will extract IP
+              event_time: Math.floor(Date.now() / 1000),
+            })
+          });
+
+          if (!response.ok) throw new Error('Server failed');
+          console.log(`[Facebook CAPI] Sent ${eventName} event successfully ✅`);
+        } catch (err) {
+          console.error('Error sending event to server:', err);
+        }
+      }
+
+
+      // image preview
+      profileImageInput.addEventListener('change', (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        // preview
+        const reader = new FileReader();
+        reader.onload = () => { profilePreview.src = reader.result; };
+        reader.readAsDataURL(f);
+        pendingImageFile = f;
+        uploadedImageURL = null; // will be set on upload
+      });
+
+      removeImageBtn.addEventListener('click', () => {
+        profilePreview.src = 'https://via.placeholder.com/400x300?text=Profile';
+        profileImageInput.value = '';
+        pendingImageFile = null;
+        uploadedImageURL = null;
+      });
+
+      accountTypeEl.addEventListener('change', function () {
+        const v = this.value;
+        companySection.style.display = (v === 'agent') ? 'block' : 'none';
+        displayNameLabel.textContent = (v === 'agent') ? 'Company Display Name' : 'Your Public Name';
+      });
+
+      stateSelect.addEventListener('change', function () {
+        populateCities(this.value);
+      });
+
+      // load user & profile
+      auth.onAuthStateChanged(async user => {
+        if (!user) {
+          // window.location.href = '/index.html';
+          return;
+        }
+        currentUser = user;
+        emailEl.value = user.email || '';
+
+        // load existing profile
+        try {
+          const snap = await db.ref(`Users/${user.uid}`).once('value');
+          if (snap.exists()) {
+            userData = snap.val();
+            // populate fields safely (do not overwrite undefined)
+            document.getElementById('firstName').value = userData.details?.firstName || '';
+            document.getElementById('lastName').value = userData.details?.lastName || '';
+            document.getElementById('displayName').value = userData.company?.displayName || (userData.details?.firstName || '') + ' ' + (userData.details?.lastName || '');
+            document.getElementById('phone').value = userData.details?.phone || '';
+            document.getElementById('streetAddress').value = userData.address?.street || '';
+            accountTypeEl.value = userData.meta?.accountType || '';
+            if (userData.meta?.accountType === 'agent') { companySection.style.display = 'block'; document.getElementById('companyName').value = userData.company?.companyName || ''; }
+            if (userData.media?.profileImage) { profilePreview.src = userData.media.profileImage; uploadedImageURL = userData.media.profileImage; }
+            // location populate
+            if (userData.address?.state) { stateSelect.value = userData.address.state; populateCities(userData.address.state, userData.address.city); }
+            // preview UI
+            updatePreview();
+            updatePlanUIFromData(userData);
+          } else {
+            // Fresh user — show defaults
+            updatePreview();
+            updatePlanUIFromData(null);
+          }
+        } catch (err) {
+          console.error('load profile err', err);
+          showToast('Could not load profile');
+        }
+      });
+
+      // update right preview
+      function updatePreview() {
+        const dn = document.getElementById('displayName').value || (document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value) || 'Your name will appear here';
+        previewName.textContent = dn;
+        previewRole.textContent = (accountTypeEl.value ? accountTypeEl.options[accountTypeEl.selectedIndex].text : 'Account type');
+        previewContact.textContent = (phoneEl.value ? phoneEl.value + ' • ' : '') + (emailEl.value || '');
+      }
+
+      // wire small updates for preview
+      ['displayName', 'firstName', 'lastName', 'phone'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updatePreview);
+      });
+      accountTypeEl.addEventListener('input', updatePreview);
+
+      // update plan UI (simple)
+      function updatePlanUIFromData(data) {
+        // if user has subscription stored
+        const sub = data?.subscription;
+        let plan = 'Starter';
+        let used = 0;
+        let allowed = 1;
+        if (sub?.plan) { plan = ('' + sub.plan).charAt(0).toUpperCase() + ('' + sub.plan).slice(1); sessionStorage.setItem('plan', sub.plan) }
+        const sessionPlan = (sessionStorage.getItem('plan') || 'starter').toLowerCase();
+        const planMap = { starter: 1, professional: 7, business: 15, enterprise: 9999 };
+        allowed = planMap[sessionPlan] || 1;
+
+        // calculate used from existing properties count (best-effort)
+        if (data && data.propertiesCount) used = Number(data.propertiesCount) || 0;
+
+        const pct = Math.round((used / allowed) * 100);
+        planFillEl.style.width = Math.min(100, pct) + '%';
+        planCountEl.textContent = `${used}/${allowed}`;
+      }
+
+      // validation helpers
+      function formIsValid() {
+        const phone = phoneEl.value.trim();
+        const display = document.getElementById('displayName').value.trim();
+        const first = document.getElementById('firstName').value.trim();
+        const last = document.getElementById('lastName').value.trim();
+        const state = stateSelect.value;
+        const city = citySelect.value;
+        const street = document.getElementById('streetAddress').value.trim();
+
+        // reset errors
+        document.getElementById('phoneError').style.display = 'none';
+        document.getElementById('accountTypeError').style.display = 'none';
+
+        if (!accountTypeEl.value) { document.getElementById('accountTypeError').textContent = 'Please select account type'; document.getElementById('accountTypeError').style.display = 'block'; accountTypeEl.focus(); return false; }
+        if (!display || !first || !last) { showToast('Please complete name fields'); return false; }
+        if (!validatePhone(phone)) { document.getElementById('phoneError').textContent = 'Enter a valid Nigerian phone (e.g. 08012345678)'; document.getElementById('phoneError').style.display = 'block'; phoneEl.focus(); return false; }
+        if (!state || !city || !street) { showToast('Please provide a location'); return false; }
+        return true;
+      }
+
+      // save handler
+      profileForm.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        if (!currentUser) { showToast('No authenticated user'); return; }
+        if (!formIsValid()) return;
+
+        showOverlay(true);
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+
+        // build profile object partially and then update
+        const profileUpdates = {};
+        const uid = currentUser.uid;
+
+        // prepare profile object (we use update to avoid clobbering)
+        const profileData = {
+          address: {
+            state: stateSelect.value,
+            city: citySelect.value,
+            street: document.getElementById('streetAddress').value.trim()
+          },
+          meta: {
+            accountType: accountTypeEl.value || 'owner',
+            verified: userData?.meta?.verified || 'UnVerified',
+            updatedAt: firebase.database.ServerValue.TIMESTAMP
+          },
+          details: {
+            firstName: document.getElementById('firstName').value.trim(),
+            lastName: document.getElementById('lastName').value.trim(),
+            phone: phoneEl.value.trim(),
+            email: currentUser.email
+          },
+          company: {
+            displayName: document.getElementById('displayName').value.trim(),
+            companyName: document.getElementById('companyName').value || ''
+          }
+        };
+
+        // If there's a new image, upload to storage
+        if (pendingImageFile) {
+          try {
+            const file = pendingImageFile;
+            const ext = file.name.split('.').pop();
+            const storageRef = storage.ref().child(`profile_images/${uid}_${Date.now()}.${ext}`);
+            const uploadTask = storageRef.put(file);
+            uploadProgress.style.display = 'block';
+            uploadPercent.textContent = '0%';
+            // monitor
+            await new Promise((resolve, reject) => {
+              uploadTask.on('state_changed', snapshot => {
+                const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                uploadPercent.textContent = pct + '%';
+              }, err => { console.error(err); reject(err) }, async () => {
+                const url = await storageRef.getDownloadURL();
+                uploadedImageURL = url;
+                profileData.media = { profileImage: url };
+                resolve();
+              });
+            });
+          } catch (err) {
+            console.error('image upload failed', err);
+            showToast('Image upload failed — saving without photo');
+          } finally {
+            uploadProgress.style.display = 'none';
+          }
+        } else if (uploadedImageURL) {
+          profileData.media = { profileImage: uploadedImageURL };
+        }
+
+        // Save updates usipdateng u() to avoid clobber
+        try {
+          profileUpdates[`Users/${uid}/details`] = profileData.details;
+          profileUpdates[`Users/${uid}/address`] = profileData.address;
+          profileUpdates[`Users/${uid}/company`] = profileData.company;
+          profileUpdates[`Users/${uid}/meta`] = Object.assign({}, userData?.meta || {}, profileData.meta);
+          if (profileData.media) profileUpdates[`Users/${uid}/media`] = profileData.media;
+
+          await db.ref().update(profileUpdates);
+          const notifRef = await db.ref(`Users/${uid}/notifications`).push();
+          await notifRef.set({
+            content: profileComplete,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            status: 'new'
+          });
+
+          await getClientIp();
+          UserAgent = getUserAgent();
+          console.log(UserAgent);
+          console.log(ClientIp);
+
+          const FB_FBP = getFbp();
+          // const FB_FBC = getFbc();
+          const FB_FBC = getSavedFbc();
+          console.log(FB_FBP);
+          console.log(FB_FBC);
+
+          await trackEvent('CompleteProfile', {
+            action_type: 'complete_profile',
+            firstName: profileData.details.firstName,
+            lastName: profileData.details.lastName,
+            email: profileData.details.email,
+            phone: profileData.details.phone,
+            state: profileData.address.state,
+            city: profileData.address.city,
+            country: 'NG',
+            clientIpAddress: ClientIp,
+            clientUserAgent: UserAgent,
+            fbp: FB_FBP,
+            fbc: FB_FBC
+
+          });
+          showToast('Profile saved successfully', 1800);
+          // redirect to verification or dashboard depending on meta.verified
+          // fetch latest meta
+          const metaSnap = await db.ref(`Users/${uid}/meta/verified`).once('value');
+          const v = metaSnap.val();
+
+
+
+          setTimeout(() => {
+            if (!v || v === 'UnVerified') window.location.href = 'IdentityVerification.html';
+            else window.location.href = 'dashboard.html';
+          }, 900);
+        } catch (err) {
+          console.error('save error', err);
+          showToast('Could not save profile. Try again.');
+        } finally {
+          showOverlay(false);
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<i class="fa fa-save"></i> Save Profile';
+        }
+      });
+
+      // skip/cancel actions
+      document.getElementById('cancelBtn').addEventListener('click', () => window.location.href = '/dashboard.html');
+      document.getElementById('skipBtn').addEventListener('click', () => {
+        if (confirm('Skip completing profile now? You can finish later.')) window.location.href = '/dashboard.html';
+      });
+
+      // go verify & subscribe helpers
+      document.getElementById('goVerify').addEventListener('click', () => window.location.href = '/verification.html');
+      document.getElementById('goSubscribe').addEventListener('click', () => window.location.href = '/subscription.html');
+
+    })();
+  </script>
+</body>
+
+</html>

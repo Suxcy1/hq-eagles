@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Notifications</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+    <link rel="manifest" href="images/favicon_io/site.webmanifest">
+    <style>
+        :root {
+            --bg: #f6f8fb;
+            --card: #fff;
+            --muted: #6b7280;
+            --accent: #0b65ff;
+            --shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        body {
+            font-family: Inter, system-ui, Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            color: #111
+        }
+
+        header {
+            background: linear-gradient(90deg, #0b65ff 0%, #3aa0ff 100%);
+            color: white;
+            padding: 18px 24px
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 16px
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden
+        }
+
+        .card .list {
+            display: flex;
+            flex-direction: column
+        }
+
+        .notif {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            border-bottom: 1px solid #eef2f7;
+            align-items: flex-start;
+            text-decoration: none;
+            color: inherit
+        }
+
+        .notif:last-child {
+            border-bottom: 0
+        }
+
+        .notif .avatar {
+            flex: 0 0 52px;
+            height: 52px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #e6eefc;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .notif .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .notif .body {
+            flex: 1;
+            min-width: 0
+        }
+
+        .notif .meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px
+        }
+
+        .notif .title {
+            font-weight: 600;
+            font-size: 14px
+        }
+
+        .notif .time {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .notif .content {
+            font-size: 13px;
+            color: #111;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden
+        }
+
+        .notif.new {
+            background: linear-gradient(90deg, rgba(11, 101, 255, 0.06), rgba(58, 160, 255, 0.02));
+            border-left: 4px solid var(--accent)
+        }
+
+        .empty {
+            padding: 40px;
+            text-align: center;
+            color: var(--muted)
+        }
+
+        /* small responsive tweaks */
+        @media(max-width:520px) {
+            .notif {
+                padding: 12px
+            }
+
+            .notif .avatar {
+                width: 44px;
+                height: 44px
+            }
+        }
+
+
+        /* Notification company-style card */
+        .engles-notif {
+            max-width: 820px;
+            margin: 18px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(10, 20, 40, 0.06);
+            padding: 22px;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            color: #0b1330;
+            line-height: 1.45;
+        }
+
+        .engles-notif .header {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .engles-notif .logo-badge {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #eef6ff, #f3fbff);
+            border: 1px solid rgba(11, 101, 255, 0.08);
+            font-weight: 700;
+            color: #0b65ff;
+        }
+
+        .engles-notif h2 {
+            margin: 0;
+            font-size: 18px;
+            letter-spacing: 0.1px;
+        }
+
+        .engles-notif p.lead {
+            margin: 6px 0 0;
+            color: #445066;
+            font-size: 14px;
+        }
+
+        .engles-notif .body {
+            margin-top: 12px;
+            color: #0f1724;
+            font-size: 15px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: 0;
+            margin-top: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #0b65ff, #0561e6);
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(11, 101, 255, 0.14);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #0b65ff;
+            border: 1px solid rgba(11, 101, 255, 0.12);
+        }
+
+        /* Denied list styling */
+        .engles-notif .reasons {
+            margin-top: 10px;
+            padding-left: 18px;
+            color: #253246;
+        }
+
+        .engles-notif .reasons li {
+            margin: 8px 0;
+        }
+
+        /* Important callout for account disabled */
+        .callout-danger {
+            margin-top: 12px;
+            background: linear-gradient(90deg, #fff6f6, #fff8f8);
+            border-left: 4px solid #ff3b30;
+            padding: 12px;
+            border-radius: 8px;
+            color: #6b1a17;
+        }
+
+        /* Small note */
+        .engles-notif .small {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width:520px) {
+            .engles-notif {
+                padding: 16px;
+            }
+
+            .engles-notif .logo-badge {
+                width: 48px;
+                height: 48px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Notifications</h1>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <div id="list" class="list"></div>
+            <div id="empty" class="empty" style="display:none">No notifications found.</div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-storage-compat.js"></script>
+    <script src="firebase.js"></script>
+
+    <!-- IMPORTANT: make sure your firebase.js (which loads firebase 9.6.0 compat and initializes app) is included before this script -->
+    <script>
+        // Use compat API from your existing firebase.js
+        const database = firebase.database();
+        const auth = firebase.auth();
+
+        const listEl = document.getElementById('list');
+        const emptyEl = document.getElementById('empty');
+
+        function buildDetailUrl(item) {
+            const params = new URLSearchParams();
+            params.set('key', item.key);
+            params.set('source', item.source);
+            if (item.source === 'user') params.set('uid', item.userId);
+            return 'notification-view.html?' + params.toString();
+        }
+
+        function findHtmlField(payload) {
+            if (!payload) return null;
+            const candidateKeys = ['content', 'html', 'body', 'message', 'notification', 'description', 'text'];
+            for (const k of candidateKeys) {
+                if (payload[k] && typeof payload[k] === 'string') return payload[k];
+            }
+            for (const k in payload) {
+                if (typeof payload[k] === 'string' && /<[^>]+>/.test(payload[k])) return payload[k];
+            }
+            return null;
+        }
+
+        function summarizeText(s) {
+            const t = (s || '').replace(/\s+/g, ' ').trim();
+            if (t.length <= 160) return t;
+            return t.slice(0, 160) + ' ...';
+        }
+
+        function formatTimestamp(ts) {
+            if (!ts) return '';
+            let d = (typeof ts === 'number') ? new Date(ts) : new Date(ts);
+            if (isNaN(d)) return '';
+            return d.toLocaleString();
+        }
+
+        function createNotificationNode(item) {
+            const a = document.createElement('a');
+            a.className = 'notif' + (item.isNew ? ' new' : '');
+            a.href = buildDetailUrl(item);
+
+            const avatar = document.createElement('div'); avatar.className = 'avatar';
+            const img = document.createElement('img'); img.alt = 'avatar';
+            img.src = item.avatar || item.payload.mainImage || item.payload.avatar || item.payload.avatarUrl || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23e6eefc"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="24" fill="%230b65ff">N</text></svg>';
+            avatar.appendChild(img);
+
+            const body = document.createElement('div'); body.className = 'body';
+            const meta = document.createElement('div'); meta.className = 'meta';
+            const title = document.createElement('div'); title.className = 'title'; title.textContent = item.payload.title || item.payload.subject || (item.source === 'service' ? 'Service' : 'User Notification');
+            const time = document.createElement('div'); time.className = 'time'; time.textContent = formatTimestamp(item.payload.Time || item.payload.time || item.payload.timestamp || item.payload.createdAt);
+            meta.appendChild(title); meta.appendChild(time);
+
+            const content = document.createElement('div'); content.className = 'content';
+            const htmlField = findHtmlField(item.payload);
+            if (htmlField) {
+                content.innerHTML = htmlField; // renders DB HTML/CSS per your request (trust the DB content)
+            } else if (item.payload.content) {
+                content.textContent = summarizeText(item.payload.content);
+            } else {
+                content.textContent = summarizeText(JSON.stringify(item.payload));
+            }
+
+            body.appendChild(meta);
+            body.appendChild(content);
+
+            a.appendChild(avatar);
+            a.appendChild(body);
+            return a;
+        }
+
+        async function loadAndRenderForUser(uid) {
+            try {
+                const userNotifRef = database.ref(`Users/${uid}/notifications`);
+                const serviceNotifRef = database.ref(`services/notifications`);
+
+                const [userSnap, serviceSnap, userImageSnap] = await Promise.all([
+                    userNotifRef.once('value'),
+                    serviceNotifRef.once('value'),
+                    database.ref(`Users/${uid}/media/mainImage`).once('value')
+                ]);
+
+                const items = [];
+                const userMainImage = userImageSnap.exists() ? userImageSnap.val() : null;
+
+                if (userSnap.exists()) {
+                    userSnap.forEach(childSnap => {
+                        const val = childSnap.val();
+                        items.push({ key: childSnap.key, payload: val, source: 'user', userId: uid, isNew: val && val.status === 'new', avatar: userMainImage });
+                    });
+                }
+                if (serviceSnap.exists()) {
+                    serviceSnap.forEach(childSnap => {
+                        const val = childSnap.val();
+                        items.push({ key: childSnap.key, payload: val, source: 'service', isNew: val && val.status === 'new' });
+                    });
+                }
+
+                // Show all notifications (not only new). Sort by Time/timestamp desc if available
+                items.sort((a, b) => {
+                    const ta = a.payload.Time || a.payload.timestamp || a.payload.time || a.payload.createdAt || 0;
+                    const tb = b.payload.Time || b.payload.timestamp || b.payload.time || b.payload.createdAt || 0;
+                    return (tb - ta);
+                });
+
+                listEl.innerHTML = '';
+                if (items.length === 0) { emptyEl.style.display = 'block'; return; }
+
+                for (const it of items) {
+                    const node = createNotificationNode(it);
+                    listEl.appendChild(node);
+                }
+
+                // after rendering, mark each "new" item as viewed in the DB
+                await markNewAsViewed(items, uid);
+
+            } catch (err) {
+                console.error('Failed to load notifications', err);
+                emptyEl.style.display = 'block';
+                emptyEl.textContent = 'Failed to load notifications. See console.';
+            }
+        }
+
+        async function markNewAsViewed(items, uid) {
+            const updates = {};
+            for (const it of items) {
+                if (!it.isNew) continue;
+                if (it.source === 'user') {
+                    updates[`Users/${uid}/notifications/${it.key}/status`] = 'viewed';
+                    updates[`Users/${uid}/notifications/${it.key}/viewedAt`] = firebase.database.ServerValue.TIMESTAMP;
+                } else {
+                    updates[`services/notifications/${it.key}/status`] = 'viewed';
+                    updates[`services/notifications/${it.key}/viewedAt`] = firebase.database.ServerValue.TIMESTAMP;
+                }
+            }
+            if (Object.keys(updates).length === 0) return;
+            try {
+                await database.ref().update(updates);
+            } catch (e) {
+                console.error('Failed to mark as viewed', e);
+            }
+        }
+
+        // Use onAuthStateChanged to ensure only authorized users access this page
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                loadAndRenderForUser(user.uid);
+            } else {
+                // If user not signed in, you said you have auth pages elsewhere; show message instructing to sign in.
+                emptyEl.style.display = 'block';
+                emptyEl.innerHTML = 'You are not signed in. Please sign in to view notifications.';
+            }
+        });
+
+    </script>
+</body>
+
+</html>

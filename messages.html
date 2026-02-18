@@ -1,0 +1,290 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="/css/messages.css">
+     Add Firebase SDK -->
+<!-- Firebase SDK 
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-storage-compat.js"></script>
+</head>
+
+<body>
+     Schedule Button 
+    <button id="scheduleBtn" class="schedule-btn">Schedule Meeting</button>
+
+    Chat Container 
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages"></div>
+
+        Plus Button and Options 
+        <div class="input-container">
+            <button id="plusBtn" class="plus-btn">+</button>
+            <div id="optionsMenu" class="options-menu">
+                <div class="option" id="imageOption">
+                    <img src="/image/uploader.png" alt="Send Image">
+                    <span>Image</span>
+                </div>
+                <div class="option" id="videoCallOption">
+                    <img src="/image/video.png" alt="Video Call">
+                    <span>Video Call</span>
+                </div>
+                <div class="option" id="voiceCallOption">
+                    <img src="/image/voice.png" alt="Voice Call">
+                    <span>Voice Call</span>
+                </div>
+            </div>
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <button id="sendBtn">Send</button>
+        </div>
+    </div> 
+
+
+    Main Chat Interface 
+    <main class="chat-container">
+        <section class="property-details" id="propertyDetails"></section>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="loading-indicator">Loading messages...</div>
+        </div>
+
+        <div class="message-composer">
+            <div class="composer-controls">
+                <button id="plusBtn" class="icon-btn">
+                    <i class="fas fa-plus-circle"></i>
+                </button>
+                <div class="action-menu" id="actionMenu">
+                    <button class="action-btn" id="imageUploadBtn">
+                        <i class="fas fa-image"></i> Photo
+                    </button>
+                    <button class="action-btn" id="videoCallBtn">
+                        <i class="fas fa-video"></i> Video
+                    </button>
+                    <button class="action-btn" id="voiceCallBtn">
+                        <i class="fas fa-phone-alt"></i> Voice
+                    </button>
+                </div>
+                <input type="file" id="imageInput" accept="image/*" hidden>
+            </div>
+            <div class="message-input-container">
+                <input type="text" id="messageInput" placeholder="Type your message...">
+                <button id="sendBtn" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    Schedule Modal 
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Schedule Meeting</h2>
+            <input type="datetime-local" id="meetingTime">
+            <button id="scheduleSubmit">Schedule</button>
+        </div>
+    </div>
+
+    Rating Modal 
+    <div id="ratingModal" class="modal">
+        <div class="modal-content">
+            <h2>Rate this Conversation</h2>
+            <div class="stars">
+                <span data-value="1">★</span>
+                <span data-value="2">★</span>
+                <span data-value="3">★</span>
+                <span data-value="4">★</span>
+                <span data-value="5">★</span>
+            </div>
+            <textarea id="review" placeholder="Add comment..."></textarea>
+            <button id="submitRating">Submit</button>
+        </div>
+    </div>
+
+    <script src="/javaScipt/firebase.js"></script>
+    <script src="/javaScipt/messages.js"></script>
+</body>
+
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Chat</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_io/android-chrome-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/favicon_io/android-chrome-512.png">
+    <link rel="manifest" href="images/favicon_io/site.webmanifest">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="messages.css">
+
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <button id="scheduleBtn" class="btn schedule-btn">
+                <i class="fas fa-calendar-alt"></i> Schedule Visit
+            </button>
+            <div id="propertyPreview" class="property-preview"></div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <div class="chat-input">
+            <div class="media-options" id="mediaOptions">
+                <button class="media-btn" data-type="image">
+                    <i class="fas fa-image"></i> Photo
+                </button>
+                <button class="media-btn" data-type="video-call" disabled>
+                    <i class="fas fa-video"></i> Video Call
+                </button>
+                <button class="media-btn" data-type="voice-call" disabled>
+                    <i class="fas fa-phone-alt"></i> Voice Call
+                </button>
+            </div>
+
+            <div class="input-container">
+                <button id="mediaToggle" class="btn media-toggle">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <input type="file" id="imageUpload" hidden accept="image/*">
+                <input type="text" id="messageInput" placeholder="Type your message...">
+                <button id="sendBtn" class="btn send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add to HTML -->
+    <div class="call-notification-banner" id="callNotification">
+        <div class="notification-content">
+            <i class="fas fa-info-circle"></i>
+            <span>Video/voice calls require login. Please sign in to access calling features.</span>
+            <button class="btn btn-link" onclick="window.location.href='/login'">Login Now</button>
+        </div>
+    </div>
+
+    <!-- Add to HTML -->
+    <!-- <div id="incomingCallAlert" class="incoming-call-alert">
+        <div class="alert-content">
+            <i class="fas fa-video"></i>
+            <div class="alert-text">
+                <h4>Incoming Video Call</h4>
+                <p>From Seller Name</p>
+            </div>
+            <button class="btn btn-success" id="answerCallBtn">
+                <i class="fas fa-phone"></i> Answer
+            </button>
+        </div>
+    </div> -->
+
+    <!-- Incoming Call Alert -->
+    <div id="incomingCallAlert" class="incoming-call-alert">
+        <div class="alert-content">
+            <i class="fas fa-video fa-2x"></i>
+            <div class="alert-text">
+                <h4>Incoming Video Call</h4>
+                <p id="callerIdText"></p>
+            </div>
+            <div class="alert-controls">
+                <button class="btn btn-success" id="answerCallBtn">
+                    <i class="fas fa-phone"></i> Answer
+                </button>
+                <button class="btn btn-danger" id="declineCallBtn">
+                    <i class="fas fa-phone-slash"></i> Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="videoCallContainer" class="video-call-container">
+        <div class="call-header">
+            <div class="call-metadata">
+                <div class="participant-info">
+                    <div class="avatar"></div>
+                    <div class="participant-details">
+                        <h3 class="participant-name" id="participantName">Seller Name</h3>
+                        <div class="call-status" id="callStatus">Connecting...</div>
+                    </div>
+                </div>
+                <div class="call-timer" id="callTimer">00:00</div>
+            </div>
+            <button class="btn btn-minimize" id="minimizeCall">
+                <i class="fas fa-window-minimize"></i>
+            </button>
+        </div>
+
+        <div class="video-grid">
+            <div class="remote-video-container" id="remoteVideoContainer">
+                <video id="remoteVideo" class="remote-video" autoplay playsinline></video>
+                <div class="no-video-overlay">
+                    <i class="fas fa-video-slash"></i>
+                </div>
+            </div>
+            <div class="local-video-container" id="localVideoContainer">
+                <video id="localVideo" class="local-video" autoplay muted playsinline></video>
+            </div>
+        </div>
+
+        <div class="call-controls">
+            <div class="control-group">
+                <button class="btn-control btn-mute" id="toggleMute">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="btn-control btn-camera" id="toggleCamera">
+                    <i class="fas fa-video"></i>
+                </button>
+                <button class="btn-control btn-hangup" id="hangUpBtn">
+                    <i class="fas fa-phone-slash"></i>
+                </button>
+                <button class="btn-control btn-screen" id="toggleScreen">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <button class="btn-control btn-chat" id="toggleChat">
+                    <i class="fas fa-comment-dots"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Schedule Property Visit</h3>
+            <input type="datetime-local" id="scheduleTime">
+            <button id="confirmSchedule" class="btn">Confirm Schedule</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-storage-compat.js"></script>
+
+    <script src="firebase.js"></script>
+    <script src="messages.js"></script>
+
+
+</body>
+
+</html>
