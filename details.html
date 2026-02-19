@@ -1330,7 +1330,7 @@
                 console.log(payload);
 
                 try {
-                    const response = await fetch('http://localhost:4000/forward', {
+                    const response = await fetch('https://engleshub.onrender.com/forward', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1400,6 +1400,7 @@
 
                 if (adType === "website") {
                     campaignData.status = "active"
+                    campaignData.subType = "Plan"
                 } else {
                     campaignData.status = "Review"
                 }

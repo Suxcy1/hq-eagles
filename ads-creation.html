@@ -544,6 +544,7 @@
                         paymentReference: paymentResponse.reference,
                         status: 'active',
                         days: days,
+                        subType: "subscribe",
                         cost: days * (isWebsite ? 1000 : 2000),
                         createdAt: Date.now()
                     };
@@ -552,6 +553,7 @@
                     if (isWebsite) {
                         campaignData.startTime = Date.now();
                         campaignData.endTime = Date.now() + (days * 86400000);
+                        campaignData.type = "webSite"
                     } else {
                         const endDate = new Date(Date.now() + (days * 86400000));
                         campaignData.endTime = endDate.toLocaleDateString('en-US', {
